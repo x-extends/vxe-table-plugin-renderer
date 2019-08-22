@@ -8,7 +8,7 @@ const cleanCSS = require('gulp-clean-css')
 const prefixer = require('gulp-autoprefixer')
 const pack = require('./package.json')
 
-const exportModuleName = 'VXETablePluginTextarea'
+const exportModuleName = 'VXETablePluginRenderer'
 
 gulp.task('build_style', function () {
   return gulp.src('style.scss')

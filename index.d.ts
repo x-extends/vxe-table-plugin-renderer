@@ -7,6 +7,6 @@ export interface VXETablePluginStatic {
 /**
  * vxe-table renderer plugins for iview.
  */
-declare var VXETablePluginTextarea: VXETablePluginStatic;
+declare var VXETablePluginRenderer: VXETablePluginStatic;
 
-export default VXETablePluginTextarea;
+export default VXETablePluginRenderer;

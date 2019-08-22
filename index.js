@@ -43,21 +43,21 @@ function setCursorPosition (textarea, rangeData) {
 const $text = document.createElement('span')
 $text.className = 'x-textarea--resize'
 
-function autoResizeWidth (evnt, editRender, params) {
+function autoResizeTextarea (evnt, editRender, params) {
   let { $table, column } = params
   let { renderWidth: minWidth, renderHeight: minHeight } = column
   let inpElem = evnt.target
-  let cell = inpElem.parentNode.parentNode ? inpElem.parentNode.parentNode.parentNode : null
-  let maxWidth = editRender.maxWidth || cell.offsetWidth
+  // let cell = inpElem.parentNode.parentNode ? inpElem.parentNode.parentNode.parentNode : null
+  let maxWidth = editRender.maxWidth || 600
   let maxHeight = editRender.maxHeight || 400
   $text.textContent = `${inpElem.value}\n`
   $text.style.maxWidth = `${maxWidth}px`
   if (!$text.parentNode) {
     $table.$el.appendChild($text)
   }
-  let height = Math.max(minHeight, $text.offsetHeight + 4)
+  let height = Math.min(maxHeight, $text.offsetHeight + 4)
   inpElem.style.width = `${Math.min(maxWidth, Math.max(minWidth, $text.offsetWidth + 20))}px`
-  inpElem.style.height = `${height > maxHeight ? maxHeight : height}px`
+  inpElem.style.height = `${height < minHeight ? minHeight : height}px`
   inpElem.style.overflowY = height > maxWidth ? 'auto' : ''
 }
 
@@ -65,23 +65,45 @@ function autoResizeWidth (evnt, editRender, params) {
  * 渲染函数
  */
 const renderMap = {
+  XInput: {
+    autofocus: '.x-input',
+    renderEdit (h, editRender, params) {
+      let { column } = params
+      let { model } = column
+      return [
+        h('div', {
+          class: 'x-input--wrapper',
+          style: {
+            height: `${column.renderHeight - 1}px`
+          }
+        }, [
+          h('input', {
+            class: 'x-input',
+            domProps: {
+              value: model.value
+            }
+          })
+        ])
+      ]
+    }
+  },
   XTextarea: {
-    autofocus: '.vxe-textarea',
+    autofocus: '.x-textarea',
     renderEdit (h, editRender, params) {
       let { $table, column } = params
       let { model } = column
       let autoResizeEvent = evnt => {
-        setTimeout(() => autoResizeWidth(evnt, editRender, params), 0)
+        setTimeout(() => autoResizeTextarea(evnt, editRender, params), 0)
       }
       return [
         h('div', {
-          class: 'vxe-input--wrapper x-textarea',
+          class: 'x-textarea--wrapper',
           style: {
             height: `${column.renderHeight - 1}px`
           }
         }, [
           h('textarea', {
-            class: 'vxe-textarea',
+            class: 'x-textarea',
             domProps: {
               value: model.value
             },
@@ -128,16 +150,14 @@ const renderMap = {
       let { row, column } = params
       return [
         h('span', {
-          domProps: {
-            innerHTML: XEUtils.escape(XEUtils.get(row, column.property)).replace(/\n/g, '<br>')
-          }
-        })
+          class: 'x-textarea--content'
+        }, XEUtils.get(row, column.property))
       ]
     }
   }
 }
 
-export const VXETablePluginTextarea = {
+export const VXETablePluginRenderer = {
   install ({ renderer }) {
     // 添加到渲染器
     renderer.mixin(renderMap)
@@ -145,7 +165,7 @@ export const VXETablePluginTextarea = {
 }
 
 if (typeof window !== 'undefined' && window.VXETable) {
-  window.VXETable.use(VXETablePluginTextarea)
+  window.VXETable.use(VXETablePluginRenderer)
 }
 
-export default VXETablePluginTextarea
+export default VXETablePluginRenderer

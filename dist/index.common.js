@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports["default"] = exports.VXETablePluginTextarea = void 0;
+exports["default"] = exports.VXETablePluginRenderer = void 0;
 
 var _xeUtils = _interopRequireDefault(require("xe-utils"));
 
@@ -159,18 +159,18 @@ var renderMap = {
     }
   }
 };
-var VXETablePluginTextarea = {
+var VXETablePluginRenderer = {
   install: function install(_ref) {
     var renderer = _ref.renderer;
     // 添加到渲染器
     renderer.mixin(renderMap);
   }
 };
-exports.VXETablePluginTextarea = VXETablePluginTextarea;
+exports.VXETablePluginRenderer = VXETablePluginRenderer;
 
 if (typeof window !== 'undefined' && window.VXETable) {
-  window.VXETable.use(VXETablePluginTextarea);
+  window.VXETable.use(VXETablePluginRenderer);
 }
 
-var _default = VXETablePluginTextarea;
+var _default = VXETablePluginRenderer;
 exports["default"] = _default;

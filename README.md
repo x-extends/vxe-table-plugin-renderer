@@ -1,36 +1,48 @@
-# vxe-table-plugin-textarea
+# vxe-table-plugin-renderer
 
-[![npm version](https://img.shields.io/npm/v/vxe-table-plugin-textarea.svg?style=flat-square)](https://www.npmjs.org/package/vxe-table-plugin-textarea)
-[![npm downloads](https://img.shields.io/npm/dm/vxe-table-plugin-textarea.svg?style=flat-square)](http://npm-stat.com/charts.html?package=vxe-table-plugin-textarea)
-[![gzip size: JS](http://img.badgesize.io/https://unpkg.com/vxe-table-plugin-textarea/dist/index.min.js?compression=gzip&label=gzip%20size:%20JS)](https://unpkg.com/vxe-table-plugin-textarea/dist/index.min.js)
-[![gzip size: CSS](http://img.badgesize.io/https://unpkg.com/vxe-table-plugin-textarea/dist/style.min.css?compression=gzip&label=gzip%20size:%20CSS)](https://unpkg.com/vxe-table-plugin-textarea/dist/style.min.css)
-[![npm license](https://img.shields.io/github/license/mashape/apistatus.svg)](https://github.com/xuliangzhan/vxe-table-plugin-textarea/blob/master/LICENSE)
+[![npm version](https://img.shields.io/npm/v/vxe-table-plugin-renderer.svg?style=flat-square)](https://www.npmjs.org/package/vxe-table-plugin-renderer)
+[![npm downloads](https://img.shields.io/npm/dm/vxe-table-plugin-renderer.svg?style=flat-square)](http://npm-stat.com/charts.html?package=vxe-table-plugin-renderer)
+[![gzip size: JS](http://img.badgesize.io/https://unpkg.com/vxe-table-plugin-renderer/dist/index.min.js?compression=gzip&label=gzip%20size:%20JS)](https://unpkg.com/vxe-table-plugin-renderer/dist/index.min.js)
+[![gzip size: CSS](http://img.badgesize.io/https://unpkg.com/vxe-table-plugin-renderer/dist/style.min.css?compression=gzip&label=gzip%20size:%20CSS)](https://unpkg.com/vxe-table-plugin-renderer/dist/style.min.css)
+[![npm license](https://img.shields.io/github/license/mashape/apistatus.svg)](https://github.com/xuliangzhan/vxe-table-plugin-renderer/blob/master/LICENSE)
 
-该插件用于在 [vxe-table](https://github.com/xuliangzhan/vxe-table) 表格中实现多行文本编辑
+该插件用于在 [vxe-table](https://github.com/xuliangzhan/vxe-table) 表格中扩展的渲染器集
 
 ## Installing
 
 ```shell
-npm install xe-utils vxe-table vxe-table-plugin-textarea
+npm install xe-utils vxe-table vxe-table-plugin-renderer
 ```
 
 ```javascript
 import Vue from 'vue'
 import VXETable from 'vxe-table'
-import VXETablePluginTextarea from 'vxe-table-plugin-textarea'
-import 'vxe-table-plugin-textarea/dist/style.css'
+import VXETablePluginRenderer from 'vxe-table-plugin-renderer'
+import 'vxe-table-plugin-renderer/dist/style.css'
 
 Vue.use(VXETable)
-VXETable.use(VXETablePluginTextarea)
+VXETable.use(VXETablePluginRenderer)
 ```
 
 ## API
 
-### Props
+### XInput
+
+#### XInput Props
 
 | 属性 | 描述 | 类型 | 可选值 | 默认值 |
 |------|------|-----|-----|-----|
-| maxWidth | 最大宽 | Number | — | 500 |
+| prefixIcon | 输入框头部图标 | String | — | — |
+| suffixIcon | 输入框尾部图标 | String | — | — |
+| clearable | 是否可清空 | Boolean | — | false |
+
+### XTextarea
+
+#### XTextarea Props
+
+| 属性 | 描述 | 类型 | 可选值 | 默认值 |
+|------|------|-----|-----|-----|
+| maxWidth | 最大宽 | Number | — | — |
 
 ## Cell demo
 

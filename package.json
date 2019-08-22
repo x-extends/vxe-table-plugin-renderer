@@ -1,5 +1,5 @@
 {
-  "name": "vxe-table-plugin-textarea",
+  "name": "vxe-table-plugin-renderer",
   "version": "1.0.0",
   "description": "vxe-table renderer plugins for iview.",
   "scripts": {
@@ -46,10 +46,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/xuliangzhan/vxe-table-plugin-textarea.git"
+    "url": "git+https://github.com/xuliangzhan/vxe-table-plugin-renderer.git"
   },
   "keywords": [
-    "vxe-table-plugin-textarea"
+    "vxe-table-plugin-renderer"
   ],
   "author": {
     "name": "Xu Liangzhan",
@@ -57,7 +57,7 @@
   },
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/xuliangzhan/vxe-table-plugin-textarea/issues"
+    "url": "https://github.com/xuliangzhan/vxe-table-plugin-renderer/issues"
   },
-  "homepage": "https://github.com/xuliangzhan/vxe-table-plugin-textarea#readme"
+  "homepage": "https://github.com/xuliangzhan/vxe-table-plugin-renderer#readme"
 }
