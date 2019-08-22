@@ -32,9 +32,15 @@ VXETable.use(VXETablePluginRenderer)
 
 | 属性 | 描述 | 类型 | 可选值 | 默认值 |
 |------|------|-----|-----|-----|
-| prefixIcon | 输入框头部图标 | String | — | — |
-| suffixIcon | 输入框尾部图标 | String | — | — |
-| clearable | 是否可清空 | Boolean | — | false |
+| prefixIcon | 输入框头部图标 | Object | — | — |
+| suffixIcon | 输入框尾部图标 | Object | — | — |
+
+#### XInput Event
+
+| 属性 | 描述 | 参数 |
+|------|------|-----|-----|-----|
+| prefix-click | 头部图标点击时会触发该方法 | params, evnt |
+| suffix-click | 尾部图标点击时会触发该方法 | params, evnt |
 
 ### XTextarea
 

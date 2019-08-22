@@ -42,14 +42,18 @@ function setCursorPosition (textarea, rangeData) {
 
 const $text = document.createElement('span')
 $text.className = 'x-textarea--resize'
+$text.style.visibility = 'hidden'
+$text.style.zIndex = '-1'
+$text.style.position = 'absolute'
 
-function autoResizeTextarea (evnt, editRender, params) {
+function autoResizeTextarea (evnt, renderOpts, params) {
+  let { props = {} } = renderOpts
   let { $table, column } = params
   let { renderWidth: minWidth, renderHeight: minHeight } = column
   let inpElem = evnt.target
   // let cell = inpElem.parentNode.parentNode ? inpElem.parentNode.parentNode.parentNode : null
-  let maxWidth = editRender.maxWidth || 600
-  let maxHeight = editRender.maxHeight || 400
+  let maxWidth = props.maxWidth || 600
+  let maxHeight = props.maxHeight || 400
   $text.textContent = `${inpElem.value}\n`
   $text.style.maxWidth = `${maxWidth}px`
   if (!$text.parentNode) {
@@ -61,39 +65,87 @@ function autoResizeTextarea (evnt, editRender, params) {
   inpElem.style.overflowY = height > maxWidth ? 'auto' : ''
 }
 
+function getEvents (renderOpts, params) {
+  let { events } = renderOpts
+  let { $table, column } = params
+  let { model } = column
+  let on = {
+    input (evnt) {
+      let cellValue = evnt.target.value
+      model.update = true
+      model.value = cellValue
+      $table.updateStatus(params, cellValue)
+    }
+  }
+  if (events) {
+    XEUtils.assign(on, XEUtils.objectMap(events, cb => function () {
+      cb.apply(null, [params].concat.apply(params, arguments))
+    }))
+  }
+  return on
+}
+
 /**
  * 渲染函数
  */
 const renderMap = {
   XInput: {
     autofocus: '.x-input',
-    renderEdit (h, editRender, params) {
+    renderEdit (h, renderOpts, params) {
+      let { props = {}, attrs, events = {} } = renderOpts
       let { column } = params
       let { model } = column
+      let { prefixIcon, suffixIcon } = props
+      let { prefixClick, suffixClick } = events
       return [
         h('div', {
-          class: 'x-input--wrapper',
+          class: ['x-input--wrapper', {
+            'is--prefix': props.prefixIcon,
+            'is--suffix': props.suffixIcon
+          }],
           style: {
             height: `${column.renderHeight - 1}px`
           }
         }, [
+          prefixIcon ? h('i', {
+            class: ['x-input--prefix', prefixIcon, {
+              'is--trigger': prefixClick
+            }],
+            on: prefixClick ? {
+              click: evnt => prefixClick(params, evnt)
+            } : null
+          }) : null,
           h('input', {
             class: 'x-input',
+            attrs,
             domProps: {
               value: model.value
-            }
-          })
+            },
+            on: getEvents(renderOpts, params)
+          }),
+          suffixIcon ? h('i', {
+            class: ['x-input--suffix', suffixIcon, {
+              'is--trigger': suffixClick
+            }],
+            on: suffixClick ? {
+              click: evnt => suffixClick(params, evnt)
+            } : null
+          }) : null
         ])
       ]
     }
   },
   XTextarea: {
     autofocus: '.x-textarea',
-    renderEdit (h, editRender, params) {
+    renderEdit (h, renderOpts, params) {
+      let { attrs, events } = renderOpts
       let { $table, column } = params
       let { model } = column
       let autoResizeEvent = evnt => {
-        setTimeout(() => autoResizeTextarea(evnt, editRender, params), 0)
+        setTimeout(() => autoResizeTextarea(evnt, renderOpts, params), 0)
+        if (events && events[evnt.type]) {
+          events[evnt.type](params, evnt)
+        }
       }
       return [
         h('div', {
@@ -104,15 +156,11 @@ const renderMap = {
         }, [
           h('textarea', {
             class: 'x-textarea',
+            attrs,
             domProps: {
               value: model.value
             },
-            on: {
-              input (evnt) {
-                let inpElem = evnt.target
-                model.update = true
-                model.value = inpElem.value
-              },
+            on: XEUtils.assign(getEvents(renderOpts, params), {
               cut: autoResizeEvent,
               paste: autoResizeEvent,
               drop: autoResizeEvent,
@@ -132,21 +180,21 @@ const renderMap = {
                   setTimeout(() => {
                     rangeData.start = rangeData.end = ++pos
                     setCursorPosition(inpElem, rangeData)
-                    autoResizeEvent(evnt, editRender, params)
+                    autoResizeEvent(evnt, renderOpts, params)
                   })
                 } else {
-                  autoResizeEvent(evnt, editRender, params)
+                  autoResizeEvent(evnt, renderOpts, params)
                 }
               },
               compositionstart: autoResizeEvent,
               compositionupdate: autoResizeEvent,
               compositionend: autoResizeEvent
-            }
+            })
           })
         ])
       ]
     },
-    renderCell (h, editRender, params) {
+    renderCell (h, renderOpts, params) {
       let { row, column } = params
       return [
         h('span', {

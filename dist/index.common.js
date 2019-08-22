@@ -60,16 +60,21 @@ function setCursorPosition(textarea, rangeData) {
 
 var $text = document.createElement('span');
 $text.className = 'x-textarea--resize';
+$text.style.visibility = 'hidden';
+$text.style.zIndex = '-1';
+$text.style.position = 'absolute';
 
-function autoResizeWidth(evnt, editRender, params) {
+function autoResizeTextarea(evnt, renderOpts, params) {
+  var _renderOpts$props = renderOpts.props,
+      props = _renderOpts$props === void 0 ? {} : _renderOpts$props;
   var $table = params.$table,
       column = params.column;
   var minWidth = column.renderWidth,
       minHeight = column.renderHeight;
-  var inpElem = evnt.target;
-  var cell = inpElem.parentNode.parentNode ? inpElem.parentNode.parentNode.parentNode : null;
-  var maxWidth = editRender.maxWidth || cell.offsetWidth;
-  var maxHeight = editRender.maxHeight || 400;
+  var inpElem = evnt.target; // let cell = inpElem.parentNode.parentNode ? inpElem.parentNode.parentNode.parentNode : null
+
+  var maxWidth = props.maxWidth || 600;
+  var maxHeight = props.maxHeight || 400;
   $text.textContent = "".concat(inpElem.value, "\n");
   $text.style.maxWidth = "".concat(maxWidth, "px");
 
@@ -77,10 +82,35 @@ function autoResizeWidth(evnt, editRender, params) {
     $table.$el.appendChild($text);
   }
 
-  var height = Math.max(minHeight, $text.offsetHeight + 4);
+  var height = Math.min(maxHeight, $text.offsetHeight + 4);
   inpElem.style.width = "".concat(Math.min(maxWidth, Math.max(minWidth, $text.offsetWidth + 20)), "px");
-  inpElem.style.height = "".concat(height > maxHeight ? maxHeight : height, "px");
+  inpElem.style.height = "".concat(height < minHeight ? minHeight : height, "px");
   inpElem.style.overflowY = height > maxWidth ? 'auto' : '';
+}
+
+function getEvents(renderOpts, params) {
+  var events = renderOpts.events;
+  var $table = params.$table,
+      column = params.column;
+  var model = column.model;
+  var on = {
+    input: function input(evnt) {
+      var cellValue = evnt.target.value;
+      model.update = true;
+      model.value = cellValue;
+      $table.updateStatus(params, cellValue);
+    }
+  };
+
+  if (events) {
+    _xeUtils["default"].assign(on, _xeUtils["default"].objectMap(events, function (cb) {
+      return function () {
+        cb.apply(null, [params].concat.apply(params, arguments));
+      };
+    }));
+  }
+
+  return on;
 }
 /**
  * 渲染函数
@@ -88,35 +118,87 @@ function autoResizeWidth(evnt, editRender, params) {
 
 
 var renderMap = {
+  XInput: {
+    autofocus: '.x-input',
+    renderEdit: function renderEdit(h, renderOpts, params) {
+      var _renderOpts$props2 = renderOpts.props,
+          props = _renderOpts$props2 === void 0 ? {} : _renderOpts$props2,
+          attrs = renderOpts.attrs,
+          _renderOpts$events = renderOpts.events,
+          events = _renderOpts$events === void 0 ? {} : _renderOpts$events;
+      var column = params.column;
+      var model = column.model;
+      var prefixIcon = props.prefixIcon,
+          suffixIcon = props.suffixIcon;
+      var prefixClick = events.prefixClick,
+          suffixClick = events.suffixClick;
+      return [h('div', {
+        "class": ['x-input--wrapper', {
+          'is--prefix': props.prefixIcon,
+          'is--suffix': props.suffixIcon
+        }],
+        style: {
+          height: "".concat(column.renderHeight - 1, "px")
+        }
+      }, [prefixIcon ? h('i', {
+        "class": ['x-input--prefix', prefixIcon, {
+          'is--trigger': prefixClick
+        }],
+        on: prefixClick ? {
+          click: function click(evnt) {
+            return prefixClick(params, evnt);
+          }
+        } : null
+      }) : null, h('input', {
+        "class": 'x-input',
+        attrs: attrs,
+        domProps: {
+          value: model.value
+        },
+        on: getEvents(renderOpts, params)
+      }), suffixIcon ? h('i', {
+        "class": ['x-input--suffix', suffixIcon, {
+          'is--trigger': suffixClick
+        }],
+        on: suffixClick ? {
+          click: function click(evnt) {
+            return suffixClick(params, evnt);
+          }
+        } : null
+      }) : null])];
+    }
+  },
   XTextarea: {
-    autofocus: '.vxe-textarea',
-    renderEdit: function renderEdit(h, editRender, params) {
+    autofocus: '.x-textarea',
+    renderEdit: function renderEdit(h, renderOpts, params) {
+      var attrs = renderOpts.attrs,
+          events = renderOpts.events;
       var $table = params.$table,
           column = params.column;
       var model = column.model;
 
       var autoResizeEvent = function autoResizeEvent(evnt) {
         setTimeout(function () {
-          return autoResizeWidth(evnt, editRender, params);
+          return autoResizeTextarea(evnt, renderOpts, params);
         }, 0);
+
+        if (events && events[evnt.type]) {
+          events[evnt.type](params, evnt);
+        }
       };
 
       return [h('div', {
-        "class": 'vxe-input--wrapper x-textarea',
+        "class": 'x-textarea--wrapper',
         style: {
           height: "".concat(column.renderHeight - 1, "px")
         }
       }, [h('textarea', {
-        "class": 'vxe-textarea',
+        "class": 'x-textarea',
+        attrs: attrs,
         domProps: {
           value: model.value
         },
-        on: {
-          input: function input(evnt) {
-            var inpElem = evnt.target;
-            model.update = true;
-            model.value = inpElem.value;
-          },
+        on: _xeUtils["default"].assign(getEvents(renderOpts, params), {
           cut: autoResizeEvent,
           paste: autoResizeEvent,
           drop: autoResizeEvent,
@@ -136,26 +218,24 @@ var renderMap = {
               setTimeout(function () {
                 rangeData.start = rangeData.end = ++pos;
                 setCursorPosition(inpElem, rangeData);
-                autoResizeEvent(evnt, editRender, params);
+                autoResizeEvent(evnt, renderOpts, params);
               });
             } else {
-              autoResizeEvent(evnt, editRender, params);
+              autoResizeEvent(evnt, renderOpts, params);
             }
           },
           compositionstart: autoResizeEvent,
           compositionupdate: autoResizeEvent,
           compositionend: autoResizeEvent
-        }
+        })
       })])];
     },
-    renderCell: function renderCell(h, editRender, params) {
+    renderCell: function renderCell(h, renderOpts, params) {
       var row = params.row,
           column = params.column;
       return [h('span', {
-        domProps: {
-          innerHTML: _xeUtils["default"].escape(_xeUtils["default"].get(row, column.property)).replace(/\n/g, '<br>')
-        }
-      })];
+        "class": 'x-textarea--content'
+      }, _xeUtils["default"].get(row, column.property))];
     }
   }
 };
