@@ -51,7 +51,7 @@ VXETable.use(VXETablePluginRenderer)
 | maxWidth | 最大宽 | Number | — | — |
 | maxHeight | 最大高 | Number | — | — |
 
-## Cell demo
+## demo
 
 默认直接使用 class=vxe-table-x-renderer 既可，当然你也可以不引入默认样式，自行实现样式也是可以的。
 
@@ -79,37 +79,6 @@ export default {
           name: 'test',
           age: 26,
           role: 'Develop',
-        }
-      ]
-    }
-  }
-}
-```
-
-## Filter demo
-
-```html
-<vxe-table
-  border
-  height="600"
-  :data.sync="tableData">
-  <vxe-table-column type="index" width="60"></vxe-table-column>
-  <vxe-table-column prop="name" label="Name"></vxe-table-column>
-  <vxe-table-column prop="age" label="Age"></vxe-table-column>
-  <vxe-table-column prop="date" label="Date" :filters="[{data: []}]" :filter-render="{name: 'Input'}"></vxe-table-column>
-</vxe-table>
-```
-
-```javascript
-export default {
-  data () {
-    return {
-      tableData: [
-        {
-          id: 100,
-          name: 'test',
-          age: 26,
-          date: null
         }
       ]
     }
