@@ -46,18 +46,18 @@ VXETable.use(VXETablePluginRenderer)
 
 ## Cell demo
 
-默认直接使用 class=vxe-table-x-textarea 既可，当然你也可以不引入默认样式，自行实现样式也是可以的。
+默认直接使用 class=vxe-table-x-renderer 既可，当然你也可以不引入默认样式，自行实现样式也是可以的。
 
 ```html
 <vxe-table
   border
-  class="vxe-table-x-textarea"
+  class="vxe-table-x-renderer"
   height="600"
   :data.sync="tableData"
   :edit-config="{trigger: 'click', mode: 'cell'}">
   <vxe-table-column type="selection" width="60"></vxe-table-column>
   <vxe-table-column type="index" width="60"></vxe-table-column>
-  <vxe-table-column prop="name" label="Name" :edit-render="{name: 'XTextarea'}"></vxe-table-column>
+  <vxe-table-column prop="name" label="Name" :edit-render="{name: 'XInput'}"></vxe-table-column>
   <vxe-table-column prop="role" label="Role" :edit-render="{name: 'XTextarea'}"></vxe-table-column>
 </vxe-table>
 ```
