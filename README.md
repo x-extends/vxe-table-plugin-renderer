@@ -38,7 +38,7 @@ VXETable.use(VXETablePluginRenderer)
 #### XInput Event
 
 | 属性 | 描述 | 参数 |
-|------|------|-----|-----|-----|
+|------|------|-----|
 | prefix-click | 头部图标点击时会触发该方法 | params, evnt |
 | suffix-click | 尾部图标点击时会触发该方法 | params, evnt |
 
