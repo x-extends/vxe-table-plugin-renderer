@@ -6,7 +6,7 @@
 [![gzip size: CSS](http://img.badgesize.io/https://unpkg.com/vxe-table-plugin-renderer/dist/style.min.css?compression=gzip&label=gzip%20size:%20CSS)](https://unpkg.com/vxe-table-plugin-renderer/dist/style.min.css)
 [![npm license](https://img.shields.io/github/license/mashape/apistatus.svg)](https://github.com/xuliangzhan/vxe-table-plugin-renderer/blob/master/LICENSE)
 
-该插件用于在 [vxe-table](https://github.com/xuliangzhan/vxe-table) 表格中实现简单的渲染器
+基于 [vxe-table](https://github.com/xuliangzhan/vxe-table) 表格的增强插件，提供一些常用的渲染器
 
 ## Installing
 

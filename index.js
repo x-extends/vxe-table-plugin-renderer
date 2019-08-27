@@ -207,7 +207,6 @@ const renderMap = {
 
 export const VXETablePluginRenderer = {
   install ({ renderer }) {
-    // 添加到渲染器
     renderer.mixin(renderMap)
   }
 }

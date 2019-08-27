@@ -254,7 +254,6 @@
   var VXETablePluginRenderer = {
     install: function install(_ref) {
       var renderer = _ref.renderer;
-      // 添加到渲染器
       renderer.mixin(renderMap);
     }
   };
