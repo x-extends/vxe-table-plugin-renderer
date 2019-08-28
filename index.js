@@ -206,8 +206,8 @@ const renderMap = {
 }
 
 export const VXETablePluginRenderer = {
-  install ({ renderer }) {
-    renderer.mixin(renderMap)
+  install (VXETable) {
+    VXETable.renderer.mixin(renderMap)
   }
 }
 
