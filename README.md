@@ -60,7 +60,7 @@ VXETable.use(VXETablePluginRenderer)
   border
   class="vxe-table-x-renderer"
   height="600"
-  :data.sync="tableData"
+  :data="tableData"
   :edit-config="{trigger: 'click', mode: 'cell'}">
   <vxe-table-column type="selection" width="60"></vxe-table-column>
   <vxe-table-column type="index" width="60"></vxe-table-column>
