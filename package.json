@@ -1,6 +1,6 @@
 {
   "name": "vxe-table-plugin-renderer",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "vxe-table renderer plugin.",
   "scripts": {
     "lib": "gulp build"

@@ -1,4 +1,4 @@
-import XEUtils from 'xe-utils'
+import XEUtils from 'xe-utils/methods/xe-utils'
 
 function getCursorPosition (textarea) {
   let rangeData = { text: '', start: 0, end: 0 }

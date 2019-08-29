@@ -5,7 +5,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports["default"] = exports.VXETablePluginRenderer = void 0;
 
-var _xeUtils = _interopRequireDefault(require("xe-utils"));
+var _xeUtils = _interopRequireDefault(require("xe-utils/methods/xe-utils"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
@@ -240,9 +240,8 @@ var renderMap = {
   }
 };
 var VXETablePluginRenderer = {
-  install: function install(_ref) {
-    var renderer = _ref.renderer;
-    renderer.mixin(renderMap);
+  install: function install(VXETable) {
+    VXETable.renderer.mixin(renderMap);
   }
 };
 exports.VXETablePluginRenderer = VXETablePluginRenderer;

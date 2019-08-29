@@ -252,9 +252,8 @@
     }
   };
   var VXETablePluginRenderer = {
-    install: function install(_ref) {
-      var renderer = _ref.renderer;
-      renderer.mixin(renderMap);
+    install: function install(VXETable) {
+      VXETable.renderer.mixin(renderMap);
     }
   };
   _exports.VXETablePluginRenderer = VXETablePluginRenderer;
