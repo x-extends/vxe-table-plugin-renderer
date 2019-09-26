@@ -1,52 +1,32 @@
 import XEUtils from 'xe-utils/methods/xe-utils'
+import { VXETable } from 'vxe-table'
 
-function getCursorPosition (textarea) {
+function getCursorPosition (textarea: HTMLTextAreaElement) {
   let rangeData = { text: '', start: 0, end: 0 }
   if (textarea.setSelectionRange) {
     rangeData.start = textarea.selectionStart
     rangeData.end = textarea.selectionEnd
-    rangeData.text = (rangeData.start !== rangeData.end) ? textarea.value.substring(rangeData.start, rangeData.end) : ''
-  } else if (document.selection) {
-    let index = 0
-    let range = document.selection.createRange()
-    let textRange = document.body.createTextRange()
-    textRange.moveToElementText(textarea)
-    rangeData.text = range.text
-    rangeData.bookmark = range.getBookmark()
-    for (; textRange.compareEndPoints('StartToStart', range) < 0 && range.moveStart('character', -1) !== 0; index++) {
-      if (textarea.value.charAt(index) === '\n') {
-        index++
-      }
-    }
-    rangeData.start = index
-    rangeData.end = rangeData.text.length + rangeData.start
   }
   return rangeData
 }
 
-function setCursorPosition (textarea, rangeData) {
+function setCursorPosition (textarea: HTMLTextAreaElement, rangeData: any) {
   if (textarea.setSelectionRange) {
     textarea.focus()
     textarea.setSelectionRange(rangeData.start, rangeData.end)
-  } else if (textarea.createTextRange) {
-    let textRange = textarea.createTextRange()
-    if (textarea.value.length === rangeData.start) {
-      textRange.collapse(false)
-      textRange.select()
-    } else {
-      textRange.moveToBookmark(rangeData.bookmark)
-      textRange.select()
-    }
   }
 }
 
-const $text = document.createElement('span')
-$text.className = 'x-textarea--resize'
-$text.style.visibility = 'hidden'
-$text.style.zIndex = '-1'
-$text.style.position = 'absolute'
+var $text: HTMLSpanElement
+if (typeof document !== 'undefined') {
+  $text = document.createElement('span')
+  $text.className = 'x-textarea--resize'
+  $text.style.visibility = 'hidden'
+  $text.style.zIndex = '-1'
+  $text.style.position = 'absolute'
+}
 
-function autoResizeTextarea (evnt, renderOpts, params) {
+function autoResizeTextarea (evnt: any, renderOpts: any, params: any) {
   let { props = {} } = renderOpts
   let { $table, column } = params
   let { renderWidth: minWidth, renderHeight: minHeight } = column
@@ -65,12 +45,12 @@ function autoResizeTextarea (evnt, renderOpts, params) {
   inpElem.style.overflowY = height > maxWidth ? 'auto' : ''
 }
 
-function getEvents (renderOpts, params) {
+function getEvents (renderOpts: any, params: any) {
   let { events } = renderOpts
   let { $table, column } = params
   let { model } = column
   let on = {
-    input (evnt) {
+    input (evnt: any) {
       let cellValue = evnt.target.value
       model.update = true
       model.value = cellValue
@@ -78,7 +58,7 @@ function getEvents (renderOpts, params) {
     }
   }
   if (events) {
-    XEUtils.assign(on, XEUtils.objectMap(events, cb => function () {
+    XEUtils.assign(on, XEUtils.objectMap(events, (cb: Function) => function () {
       cb.apply(null, [params].concat.apply(params, arguments))
     }))
   }
@@ -91,7 +71,7 @@ function getEvents (renderOpts, params) {
 const renderMap = {
   XInput: {
     autofocus: '.x-input',
-    renderEdit (h, renderOpts, params) {
+    renderEdit (h: Function, renderOpts: any, params: any) {
       let { props = {}, attrs, events = {} } = renderOpts
       let { column } = params
       let { model } = column
@@ -112,7 +92,7 @@ const renderMap = {
               'is--trigger': prefixClick
             }],
             on: prefixClick ? {
-              click: evnt => prefixClick(params, evnt)
+              click: (evnt: any) => prefixClick(params, evnt)
             } : null
           }) : null,
           h('input', {
@@ -128,7 +108,7 @@ const renderMap = {
               'is--trigger': suffixClick
             }],
             on: suffixClick ? {
-              click: evnt => suffixClick(params, evnt)
+              click: (evnt: any) => suffixClick(params, evnt)
             } : null
           }) : null
         ])
@@ -137,11 +117,11 @@ const renderMap = {
   },
   XTextarea: {
     autofocus: '.x-textarea',
-    renderEdit (h, renderOpts, params) {
+    renderEdit (h: Function, renderOpts: any, params: any) {
       let { attrs, events } = renderOpts
       let { $table, column } = params
       let { model } = column
-      let autoResizeEvent = evnt => {
+      let autoResizeEvent = (evnt: any) => {
         setTimeout(() => autoResizeTextarea(evnt, renderOpts, params), 0)
         if (events && events[evnt.type]) {
           events[evnt.type](params, evnt)
@@ -165,7 +145,7 @@ const renderMap = {
               paste: autoResizeEvent,
               drop: autoResizeEvent,
               focus: autoResizeEvent,
-              keydown (evnt) {
+              keydown (evnt: any) {
                 if (evnt.keyCode === 13 && (!$table.keyboardConfig || evnt.altKey)) {
                   evnt.preventDefault()
                   evnt.stopPropagation()
@@ -180,10 +160,10 @@ const renderMap = {
                   setTimeout(() => {
                     rangeData.start = rangeData.end = ++pos
                     setCursorPosition(inpElem, rangeData)
-                    autoResizeEvent(evnt, renderOpts, params)
+                    autoResizeEvent(evnt)
                   })
                 } else {
-                  autoResizeEvent(evnt, renderOpts, params)
+                  autoResizeEvent(evnt)
                 }
               },
               compositionstart: autoResizeEvent,
@@ -194,7 +174,7 @@ const renderMap = {
         ])
       ]
     },
-    renderCell (h, renderOpts, params) {
+    renderCell (h: Function, renderOpts: any, params: any) {
       let { row, column } = params
       return [
         h('span', {
@@ -205,9 +185,12 @@ const renderMap = {
   }
 }
 
+/**
+ * 基于 vxe-table 表格的增强插件，提供一些常用的渲染器
+ */
 export const VXETablePluginRenderer = {
-  install (VXETable) {
-    VXETable.renderer.mixin(renderMap)
+  install (xtable: typeof VXETable) {
+    xtable.renderer.mixin(renderMap)
   }
 }
 

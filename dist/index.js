@@ -1,25 +1,21 @@
 (function (global, factory) {
   if (typeof define === "function" && define.amd) {
-    define("vxe-table-plugin-renderer", ["exports", "xe-utils"], factory);
+    define("vxe-table-plugin-renderer", [], factory);
   } else if (typeof exports !== "undefined") {
-    factory(exports, require("xe-utils"));
+    factory();
   } else {
     var mod = {
       exports: {}
     };
-    factory(mod.exports, global.XEUtils);
+    factory();
     global.VXETablePluginRenderer = mod.exports.default;
   }
-})(this, function (_exports, _xeUtils) {
+})(this, function () {
   "use strict";
 
-  Object.defineProperty(_exports, "__esModule", {
-    value: true
-  });
-  _exports["default"] = _exports.VXETablePluginRenderer = void 0;
-  _xeUtils = _interopRequireDefault(_xeUtils);
+  exports.__esModule = true;
 
-  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+  var xe_utils_1 = require("xe-utils");
 
   function getCursorPosition(textarea) {
     var rangeData = {
@@ -31,23 +27,6 @@
     if (textarea.setSelectionRange) {
       rangeData.start = textarea.selectionStart;
       rangeData.end = textarea.selectionEnd;
-      rangeData.text = rangeData.start !== rangeData.end ? textarea.value.substring(rangeData.start, rangeData.end) : '';
-    } else if (document.selection) {
-      var index = 0;
-      var range = document.selection.createRange();
-      var textRange = document.body.createTextRange();
-      textRange.moveToElementText(textarea);
-      rangeData.text = range.text;
-      rangeData.bookmark = range.getBookmark();
-
-      for (; textRange.compareEndPoints('StartToStart', range) < 0 && range.moveStart('character', -1) !== 0; index++) {
-        if (textarea.value.charAt(index) === '\n') {
-          index++;
-        }
-      }
-
-      rangeData.start = index;
-      rangeData.end = rangeData.text.length + rangeData.start;
     }
 
     return rangeData;
@@ -57,28 +36,22 @@
     if (textarea.setSelectionRange) {
       textarea.focus();
       textarea.setSelectionRange(rangeData.start, rangeData.end);
-    } else if (textarea.createTextRange) {
-      var textRange = textarea.createTextRange();
-
-      if (textarea.value.length === rangeData.start) {
-        textRange.collapse(false);
-        textRange.select();
-      } else {
-        textRange.moveToBookmark(rangeData.bookmark);
-        textRange.select();
-      }
     }
   }
 
-  var $text = document.createElement('span');
-  $text.className = 'x-textarea--resize';
-  $text.style.visibility = 'hidden';
-  $text.style.zIndex = '-1';
-  $text.style.position = 'absolute';
+  var $text;
+
+  if (typeof document !== 'undefined') {
+    $text = document.createElement('span');
+    $text.className = 'x-textarea--resize';
+    $text.style.visibility = 'hidden';
+    $text.style.zIndex = '-1';
+    $text.style.position = 'absolute';
+  }
 
   function autoResizeTextarea(evnt, renderOpts, params) {
-    var _renderOpts$props = renderOpts.props,
-        props = _renderOpts$props === void 0 ? {} : _renderOpts$props;
+    var _a = renderOpts.props,
+        props = _a === void 0 ? {} : _a;
     var $table = params.$table,
         column = params.column;
     var minWidth = column.renderWidth,
@@ -87,16 +60,16 @@
 
     var maxWidth = props.maxWidth || 600;
     var maxHeight = props.maxHeight || 400;
-    $text.textContent = "".concat(inpElem.value, "\n");
-    $text.style.maxWidth = "".concat(maxWidth, "px");
+    $text.textContent = inpElem.value + "\n";
+    $text.style.maxWidth = maxWidth + "px";
 
     if (!$text.parentNode) {
       $table.$el.appendChild($text);
     }
 
     var height = Math.min(maxHeight, $text.offsetHeight + 4);
-    inpElem.style.width = "".concat(Math.min(maxWidth, Math.max(minWidth, $text.offsetWidth + 20)), "px");
-    inpElem.style.height = "".concat(height < minHeight ? minHeight : height, "px");
+    inpElem.style.width = Math.min(maxWidth, Math.max(minWidth, $text.offsetWidth + 20)) + "px";
+    inpElem.style.height = (height < minHeight ? minHeight : height) + "px";
     inpElem.style.overflowY = height > maxWidth ? 'auto' : '';
   }
 
@@ -115,7 +88,7 @@
     };
 
     if (events) {
-      _xeUtils["default"].assign(on, _xeUtils["default"].objectMap(events, function (cb) {
+      xe_utils_1["default"].assign(on, xe_utils_1["default"].objectMap(events, function (cb) {
         return function () {
           cb.apply(null, [params].concat.apply(params, arguments));
         };
@@ -133,11 +106,11 @@
     XInput: {
       autofocus: '.x-input',
       renderEdit: function renderEdit(h, renderOpts, params) {
-        var _renderOpts$props2 = renderOpts.props,
-            props = _renderOpts$props2 === void 0 ? {} : _renderOpts$props2,
+        var _a = renderOpts.props,
+            props = _a === void 0 ? {} : _a,
             attrs = renderOpts.attrs,
-            _renderOpts$events = renderOpts.events,
-            events = _renderOpts$events === void 0 ? {} : _renderOpts$events;
+            _b = renderOpts.events,
+            events = _b === void 0 ? {} : _b;
         var column = params.column;
         var model = column.model;
         var prefixIcon = props.prefixIcon,
@@ -150,7 +123,7 @@
             'is--suffix': props.suffixIcon
           }],
           style: {
-            height: "".concat(column.renderHeight - 1, "px")
+            height: column.renderHeight - 1 + "px"
           }
         }, [prefixIcon ? h('i', {
           "class": ['x-input--prefix', prefixIcon, {
@@ -202,7 +175,7 @@
         return [h('div', {
           "class": 'x-textarea--wrapper',
           style: {
-            height: "".concat(column.renderHeight - 1, "px")
+            height: column.renderHeight - 1 + "px"
           }
         }, [h('textarea', {
           "class": 'x-textarea',
@@ -210,7 +183,7 @@
           domProps: {
             value: model.value
           },
-          on: _xeUtils["default"].assign(getEvents(renderOpts, params), {
+          on: xe_utils_1["default"].assign(getEvents(renderOpts, params), {
             cut: autoResizeEvent,
             paste: autoResizeEvent,
             drop: autoResizeEvent,
@@ -219,21 +192,21 @@
               if (evnt.keyCode === 13 && (!$table.keyboardConfig || evnt.altKey)) {
                 evnt.preventDefault();
                 evnt.stopPropagation();
-                var inpElem = evnt.target;
-                var rangeData = getCursorPosition(inpElem);
-                var pos = rangeData.end;
-                var cellValue = inpElem.value;
-                cellValue = "".concat(cellValue.slice(0, pos), "\n").concat(cellValue.slice(pos, cellValue.length));
-                inpElem.value = cellValue;
+                var inpElem_1 = evnt.target;
+                var rangeData_1 = getCursorPosition(inpElem_1);
+                var pos_1 = rangeData_1.end;
+                var cellValue = inpElem_1.value;
+                cellValue = cellValue.slice(0, pos_1) + "\n" + cellValue.slice(pos_1, cellValue.length);
+                inpElem_1.value = cellValue;
                 model.update = true;
                 model.value = cellValue;
                 setTimeout(function () {
-                  rangeData.start = rangeData.end = ++pos;
-                  setCursorPosition(inpElem, rangeData);
-                  autoResizeEvent(evnt, renderOpts, params);
+                  rangeData_1.start = rangeData_1.end = ++pos_1;
+                  setCursorPosition(inpElem_1, rangeData_1);
+                  autoResizeEvent(evnt);
                 });
               } else {
-                autoResizeEvent(evnt, renderOpts, params);
+                autoResizeEvent(evnt);
               }
             },
             compositionstart: autoResizeEvent,
@@ -247,21 +220,23 @@
             column = params.column;
         return [h('span', {
           "class": 'x-textarea--content'
-        }, _xeUtils["default"].get(row, column.property))];
+        }, xe_utils_1["default"].get(row, column.property))];
       }
     }
   };
-  var VXETablePluginRenderer = {
-    install: function install(VXETable) {
-      VXETable.renderer.mixin(renderMap);
+  /**
+   * 基于 vxe-table 表格的增强插件，提供一些常用的渲染器
+   */
+
+  exports.VXETablePluginRenderer = {
+    install: function install(xtable) {
+      xtable.renderer.mixin(renderMap);
     }
   };
-  _exports.VXETablePluginRenderer = VXETablePluginRenderer;
 
   if (typeof window !== 'undefined' && window.VXETable) {
-    window.VXETable.use(VXETablePluginRenderer);
+    window.VXETable.use(exports.VXETablePluginRenderer);
   }
 
-  var _default = VXETablePluginRenderer;
-  _exports["default"] = _default;
+  exports["default"] = exports.VXETablePluginRenderer;
 });
