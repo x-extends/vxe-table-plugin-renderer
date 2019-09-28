@@ -1,5 +1,5 @@
 import XEUtils from 'xe-utils/methods/xe-utils'
-import { VXETable } from 'vxe-table'
+// import { VXETable } from 'vxe-table'
 
 function getCursorPosition (textarea: HTMLTextAreaElement) {
   let rangeData = { text: '', start: 0, end: 0 }
@@ -189,8 +189,14 @@ const renderMap = {
  * 基于 vxe-table 表格的增强插件，提供一些常用的渲染器
  */
 export const VXETablePluginRenderer = {
-  install (xtable: typeof VXETable) {
+  install (xtable: any) {
     xtable.renderer.mixin(renderMap)
+  }
+}
+
+declare global {
+  interface Window {
+    VXETable: any
   }
 }
 
