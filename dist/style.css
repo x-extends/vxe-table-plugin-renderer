@@ -48,8 +48,7 @@
   .vxe-table-x-renderer .vxe-body--column > .vxe-cell > .x-input--wrapper .x-input--suffix {
     position: absolute;
     top: 50%;
-    -webkit-transform: translateY(-50%);
-            transform: translateY(-50%);
+    transform: translateY(-50%);
     z-index: 1; }
     .vxe-table-x-renderer .vxe-body--column > .vxe-cell > .x-input--wrapper .x-input--prefix.is--trigger,
     .vxe-table-x-renderer .vxe-body--column > .vxe-cell > .x-input--wrapper .x-input--suffix.is--trigger {
