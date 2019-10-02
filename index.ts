@@ -1,8 +1,14 @@
 import XEUtils from 'xe-utils/methods/xe-utils'
 // import { VXETable } from 'vxe-table'
 
-function getCursorPosition (textarea: HTMLTextAreaElement) {
-  let rangeData = { text: '', start: 0, end: 0 }
+interface posRangeData {
+  text: string;
+  start: number;
+  end: number;
+}
+
+function getCursorPosition (textarea: HTMLTextAreaElement): posRangeData {
+  let rangeData: posRangeData = { text: '', start: 0, end: 0 }
   if (textarea.setSelectionRange) {
     rangeData.start = textarea.selectionStart
     rangeData.end = textarea.selectionEnd
@@ -10,7 +16,7 @@ function getCursorPosition (textarea: HTMLTextAreaElement) {
   return rangeData
 }
 
-function setCursorPosition (textarea: HTMLTextAreaElement, rangeData: any) {
+function setCursorPosition (textarea: HTMLTextAreaElement, rangeData: posRangeData) {
   if (textarea.setSelectionRange) {
     textarea.focus()
     textarea.setSelectionRange(rangeData.start, rangeData.end)
