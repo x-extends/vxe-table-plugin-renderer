@@ -1,5 +1,5 @@
 import XEUtils from 'xe-utils/methods/xe-utils'
-// import { VXETable } from 'vxe-table'
+import VXETable from 'vxe-table/lib/vxe-table'
 
 interface posRangeData {
   text: string;
@@ -36,10 +36,10 @@ function autoResizeTextarea (evnt: any, renderOpts: any, params: any) {
   let { props = {} } = renderOpts
   let { $table, column } = params
   let { renderWidth: minWidth, renderHeight: minHeight } = column
-  let inpElem = evnt.target
+  let inpElem: HTMLInputElement = evnt.target
   // let cell = inpElem.parentNode.parentNode ? inpElem.parentNode.parentNode.parentNode : null
-  let maxWidth = props.maxWidth || 600
-  let maxHeight = props.maxHeight || 400
+  let maxWidth: number = props.maxWidth || 600
+  let maxHeight: number = props.maxHeight || 400
   $text.textContent = `${inpElem.value}\n`
   $text.style.maxWidth = `${maxWidth}px`
   if (!$text.parentNode) {
@@ -64,8 +64,8 @@ function getEvents (renderOpts: any, params: any) {
     }
   }
   if (events) {
-    XEUtils.assign(on, XEUtils.objectMap(events, (cb: Function) => function () {
-      cb.apply(null, [params].concat.apply(params, arguments))
+    XEUtils.assign(on, XEUtils.objectMap(events, (cb: Function) => function (...args: any[]) {
+      cb.apply(null, [params].concat.apply(params, args))
     }))
   }
   return on
@@ -195,7 +195,7 @@ const renderMap = {
  * 基于 vxe-table 表格的增强插件，提供一些常用的渲染器
  */
 export const VXETablePluginRenderer = {
-  install (xtable: any) {
+  install (xtable: typeof VXETable) {
     xtable.renderer.mixin(renderMap)
   }
 }

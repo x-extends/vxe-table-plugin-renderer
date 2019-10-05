@@ -21,7 +21,6 @@
 
   function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
-  // import { VXETable } from 'vxe-table'
   function getCursorPosition(textarea) {
     var rangeData = {
       text: '',
@@ -95,7 +94,11 @@
     if (events) {
       _xeUtils["default"].assign(on, _xeUtils["default"].objectMap(events, function (cb) {
         return function () {
-          cb.apply(null, [params].concat.apply(params, arguments));
+          for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+            args[_key] = arguments[_key];
+          }
+
+          cb.apply(null, [params].concat.apply(params, args));
         };
       }));
     }
