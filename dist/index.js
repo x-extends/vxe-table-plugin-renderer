@@ -10,7 +10,7 @@
     factory(mod.exports, global.XEUtils);
     global.VXETablePluginRenderer = mod.exports.default;
   }
-})(this, function (_exports, _xeUtils) {
+})(typeof globalThis !== "undefined" ? globalThis : typeof self !== "undefined" ? self : this, function (_exports, _xeUtils) {
   "use strict";
 
   Object.defineProperty(_exports, "__esModule", {
@@ -28,7 +28,7 @@
       end: 0
     };
 
-    if (textarea.setSelectionRange) {
+    if (_xeUtils["default"].isFunction(textarea.setSelectionRange)) {
       rangeData.start = textarea.selectionStart;
       rangeData.end = textarea.selectionEnd;
     }
@@ -37,7 +37,7 @@
   }
 
   function setCursorPosition(textarea, rangeData) {
-    if (textarea.setSelectionRange) {
+    if (_xeUtils["default"].isFunction(textarea.setSelectionRange)) {
       textarea.focus();
       textarea.setSelectionRange(rangeData.start, rangeData.end);
     }

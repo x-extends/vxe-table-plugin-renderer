@@ -1,5 +1,5 @@
 import XEUtils from 'xe-utils/methods/xe-utils'
-import VXETable from 'vxe-table/lib/vxe-table'
+import { VXETable } from 'vxe-table/lib/vxe-table'
 
 interface posRangeData {
   text: string;
@@ -9,7 +9,7 @@ interface posRangeData {
 
 function getCursorPosition (textarea: HTMLTextAreaElement): posRangeData {
   let rangeData: posRangeData = { text: '', start: 0, end: 0 }
-  if (textarea.setSelectionRange) {
+  if (XEUtils.isFunction(textarea.setSelectionRange)) {
     rangeData.start = textarea.selectionStart
     rangeData.end = textarea.selectionEnd
   }
@@ -17,7 +17,7 @@ function getCursorPosition (textarea: HTMLTextAreaElement): posRangeData {
 }
 
 function setCursorPosition (textarea: HTMLTextAreaElement, rangeData: posRangeData) {
-  if (textarea.setSelectionRange) {
+  if (XEUtils.isFunction(textarea.setSelectionRange)) {
     textarea.focus()
     textarea.setSelectionRange(rangeData.start, rangeData.end)
   }
