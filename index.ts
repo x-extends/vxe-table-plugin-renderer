@@ -1,4 +1,4 @@
-import XEUtils from 'xe-utils/methods/xe-utils'
+import XEUtils from 'xe-utils/ctor'
 import { VXETable } from 'vxe-table/lib/vxe-table'
 
 interface posRangeData {
