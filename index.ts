@@ -1,191 +1,113 @@
+/* eslint-disable no-unused-vars */
+import { CreateElement } from 'vue'
 import XEUtils from 'xe-utils/ctor'
-import { VXETable } from 'vxe-table/lib/vxe-table'
-
-interface posRangeData {
-  text: string;
-  start: number;
-  end: number;
-}
-
-function getCursorPosition (textarea: HTMLTextAreaElement): posRangeData {
-  let rangeData: posRangeData = { text: '', start: 0, end: 0 }
-  if (XEUtils.isFunction(textarea.setSelectionRange)) {
-    rangeData.start = textarea.selectionStart
-    rangeData.end = textarea.selectionEnd
-  }
-  return rangeData
-}
-
-function setCursorPosition (textarea: HTMLTextAreaElement, rangeData: posRangeData) {
-  if (XEUtils.isFunction(textarea.setSelectionRange)) {
-    textarea.focus()
-    textarea.setSelectionRange(rangeData.start, rangeData.end)
-  }
-}
-
-var $text: HTMLSpanElement
-if (typeof document !== 'undefined') {
-  $text = document.createElement('span')
-  $text.className = 'x-textarea--resize'
-  $text.style.visibility = 'hidden'
-  $text.style.zIndex = '-1'
-  $text.style.position = 'absolute'
-}
-
-function autoResizeTextarea (evnt: any, renderOpts: any, params: any) {
-  let { props = {} } = renderOpts
-  let { $table, column } = params
-  let { renderWidth: minWidth, renderHeight: minHeight } = column
-  let inpElem: HTMLInputElement = evnt.target
-  // let cell = inpElem.parentNode.parentNode ? inpElem.parentNode.parentNode.parentNode : null
-  let maxWidth: number = props.maxWidth || 600
-  let maxHeight: number = props.maxHeight || 400
-  $text.textContent = `${inpElem.value}\n`
-  $text.style.maxWidth = `${maxWidth}px`
-  if (!$text.parentNode) {
-    $table.$el.appendChild($text)
-  }
-  let height = Math.min(maxHeight, $text.offsetHeight + 4)
-  inpElem.style.width = `${Math.min(maxWidth, Math.max(minWidth, $text.offsetWidth + 20))}px`
-  inpElem.style.height = `${height < minHeight ? minHeight : height}px`
-  inpElem.style.overflowY = height > maxWidth ? 'auto' : ''
-}
-
-function getEvents (renderOpts: any, params: any) {
-  let { events } = renderOpts
-  let { $table, column } = params
-  let { model } = column
-  let on = {
-    input (evnt: any) {
-      let cellValue = evnt.target.value
-      model.update = true
-      model.value = cellValue
-      $table.updateStatus(params, cellValue)
-    }
-  }
-  if (events) {
-    XEUtils.assign(on, XEUtils.objectMap(events, (cb: Function) => function (...args: any[]) {
-      cb.apply(null, [params].concat.apply(params, args))
-    }))
-  }
-  return on
-}
+import {
+  VXETable,
+  ColumnCellRenderOptions,
+  ColumnCellRenderParams
+} from 'vxe-table/lib/vxe-table'
+/* eslint-enable no-unused-vars */
 
 /**
  * 渲染函数
  */
 const renderMap = {
-  XInput: {
-    autofocus: '.x-input',
-    renderEdit (h: Function, renderOpts: any, params: any) {
-      let { props = {}, attrs, events = {} } = renderOpts
-      let { column } = params
-      let { model } = column
-      let { prefixIcon, suffixIcon } = props
-      let { prefixClick, suffixClick } = events
+  ProgressBar: {
+    renderDefault (h: CreateElement, renderOpts: ColumnCellRenderOptions, params: ColumnCellRenderParams) {
+      const { row, column } = params
+      const { props = {} } = renderOpts
+      const { lineWidth, lineColor, lineBgColor } = props
+      const cellValue = Math.min(100, XEUtils.toNumber(row[column.property]))
+      let labelPosition
+      if (cellValue < 30) {
+        labelPosition = 'outer'
+      } else if (cellValue > 70) {
+        labelPosition = 'inner'
+      }
       return [
-        h('div', {
-          class: ['x-input--wrapper', {
-            'is--prefix': props.prefixIcon,
-            'is--suffix': props.suffixIcon
+        h('span', {
+          class: ['vxe-renderer--progress-bar', {
+            [`label--${labelPosition}`]: labelPosition
           }],
           style: {
-            height: `${column.renderHeight - 1}px`
+            backgroundColor: lineBgColor
           }
         }, [
-          prefixIcon ? h('i', {
-            class: ['x-input--prefix', prefixIcon, {
-              'is--trigger': prefixClick
-            }],
-            on: prefixClick ? {
-              click: (evnt: any) => prefixClick(params, evnt)
-            } : null
-          }) : null,
-          h('input', {
-            class: 'x-input',
-            attrs,
-            domProps: {
-              value: model.value
-            },
-            on: getEvents(renderOpts, params)
+          h('span', {
+            class: 'vxe-renderer--progress-bar-chart',
+            style: {
+              width: `${cellValue}%`,
+              height: XEUtils.isNumber(lineWidth) ? `${lineWidth}` : lineWidth,
+              backgroundColor: lineColor
+            }
           }),
-          suffixIcon ? h('i', {
-            class: ['x-input--suffix', suffixIcon, {
-              'is--trigger': suffixClick
-            }],
-            on: suffixClick ? {
-              click: (evnt: any) => suffixClick(params, evnt)
-            } : null
-          }) : null
+          h('span', {
+            class: 'vxe-renderer--progress-bar-label'
+          }, `${cellValue}%`)
         ])
       ]
     }
   },
-  XTextarea: {
-    autofocus: '.x-textarea',
-    renderEdit (h: Function, renderOpts: any, params: any) {
-      let { attrs, events } = renderOpts
-      let { $table, column } = params
-      let { model } = column
-      let autoResizeEvent = (evnt: any) => {
-        setTimeout(() => autoResizeTextarea(evnt, renderOpts, params), 0)
-        if (events && events[evnt.type]) {
-          events[evnt.type](params, evnt)
+  ProgressRing: {
+    renderDefault (h: CreateElement, renderOpts: ColumnCellRenderOptions, params: ColumnCellRenderParams) {
+      const { row, column } = params
+      const { props = {} } = renderOpts
+      const { width, height, labelColor, lineColor, lineBgColor, hollowColor } = props
+      const cellValue = Math.min(100, XEUtils.toNumber(row[column.property]))
+      let halfRing = 0
+      let maskRing = 0
+      if (cellValue) {
+        if (cellValue > 50) {
+          halfRing = XEUtils.floor((cellValue - 50) * 3.6)
+          maskRing = 180
+        } else {
+          maskRing = XEUtils.floor(cellValue * 3.6)
         }
       }
       return [
-        h('div', {
-          class: 'x-textarea--wrapper',
+        h('span', {
+          class: 'vxe-renderer--progress-ring',
           style: {
-            height: `${column.renderHeight - 1}px`
+            width: XEUtils.isNumber(width) ? `${width}px` : width,
+            height: XEUtils.isNumber(height) ? `${height}px` : height,
+            backgroundColor: lineBgColor
           }
         }, [
-          h('textarea', {
-            class: 'x-textarea',
-            attrs,
-            domProps: {
-              value: model.value
-            },
-            on: XEUtils.assign(getEvents(renderOpts, params), {
-              cut: autoResizeEvent,
-              paste: autoResizeEvent,
-              drop: autoResizeEvent,
-              focus: autoResizeEvent,
-              keydown (evnt: any) {
-                if (evnt.keyCode === 13 && (!$table.keyboardConfig || evnt.altKey)) {
-                  evnt.preventDefault()
-                  evnt.stopPropagation()
-                  let inpElem = evnt.target
-                  let rangeData = getCursorPosition(inpElem)
-                  let pos = rangeData.end
-                  let cellValue = inpElem.value
-                  cellValue = `${cellValue.slice(0, pos)}\n${cellValue.slice(pos, cellValue.length)}`
-                  inpElem.value = cellValue
-                  model.update = true
-                  model.value = cellValue
-                  setTimeout(() => {
-                    rangeData.start = rangeData.end = ++pos
-                    setCursorPosition(inpElem, rangeData)
-                    autoResizeEvent(evnt)
-                  })
-                } else {
-                  autoResizeEvent(evnt)
-                }
-              },
-              compositionstart: autoResizeEvent,
-              compositionupdate: autoResizeEvent,
-              compositionend: autoResizeEvent
-            })
-          })
+          h('span', {
+            class: 'vxe-renderer--progress-ring-piece-prev',
+            style: {
+              backgroundColor: lineColor
+            }
+          }),
+          h('span', {
+            class: ['vxe-renderer--progress-ring-piece-naxt', {
+              'is--half': halfRing
+            }],
+            style: {
+              backgroundColor: lineColor,
+              transform: `rotate(${halfRing}deg)`
+            }
+          }),
+          h('span', {
+            class: 'vxe-renderer--progress-ring-mask',
+            style: {
+              backgroundColor: lineBgColor,
+              transform: `rotate(${maskRing}deg)`
+            }
+          }),
+          h('span', {
+            class: 'vxe-renderer--progress-ring-hollow',
+            style: {
+              backgroundColor: hollowColor
+            }
+          }),
+          h('span', {
+            class: 'vxe-renderer--progress-ring-label',
+            style: {
+              color: labelColor
+            }
+          }, `${cellValue}%`)
         ])
-      ]
-    },
-    renderCell (h: Function, renderOpts: any, params: any) {
-      let { row, column } = params
-      return [
-        h('span', {
-          class: 'x-textarea--content'
-        }, XEUtils.get(row, column.property))
       ]
     }
   }
