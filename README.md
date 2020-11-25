@@ -44,6 +44,7 @@ VXETable.use(VXETablePluginRenderer)
 |------|------|-----|-----|-----|
 | width | 宽度 | number | — | — |
 | height | 高度 | number | — | — |
+| margin | 间距 | string | — | — |
 | lineColor | 线颜色 | string | — | — |
 | lineBgColor | 线背景颜色 | string | — | — |
 | hollowColor | 圆心的背景颜色 | string | — | — |

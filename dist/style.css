@@ -13,6 +13,7 @@
   width: 46px;
   height: 46px;
   border-radius: 50%;
+  margin: 0 1px;
   background-color: #f0f0f0; }
   .vxe-renderer--progress-ring .vxe-renderer--progress-ring-piece-prev,
   .vxe-renderer--progress-ring .vxe-renderer--progress-ring-piece-naxt,
@@ -24,11 +25,11 @@
     transform: rotate(0deg);
     transform-origin: center left; }
   .vxe-renderer--progress-ring .vxe-renderer--progress-ring-piece-prev {
-    background-color: yellowgreen;
+    background-color: #409eff;
     z-index: 1; }
   .vxe-renderer--progress-ring .vxe-renderer--progress-ring-piece-naxt {
     display: none;
-    background-color: yellowgreen;
+    background-color: #409eff;
     z-index: 3; }
     .vxe-renderer--progress-ring .vxe-renderer--progress-ring-piece-naxt.is--half {
       display: block; }
@@ -58,9 +59,10 @@
   position: relative;
   display: block;
   width: 100%;
-  height: 1em;
-  line-height: 1em;
-  text-align: left; }
+  height: 0.8em;
+  line-height: 0.8em;
+  text-align: left;
+  margin: 1px 0; }
   .vxe-renderer--progress-bar.label--inner .vxe-renderer--progress-bar-label {
     color: #fff;
     transform: translateX(-100%) scale(0.8); }
