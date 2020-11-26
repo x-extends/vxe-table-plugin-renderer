@@ -48,7 +48,7 @@ gulp.task('build_commonjs', function () {
 gulp.task('build_umd', function () {
   return gulp.src(['depend.ts', 'index.ts'])
     .pipe(ts(tsconfig.compilerOptions))
-    .pipe(replace(`import XEUtils from 'xe-utils/ctor';`, `import XEUtils from 'xe-utils';`))
+    .pipe(replace('import XEUtils from \'xe-utils/ctor\';', 'import XEUtils from \'xe-utils\';'))
     .pipe(babel({
       moduleId: pack.name,
       presets: ['@babel/env'],

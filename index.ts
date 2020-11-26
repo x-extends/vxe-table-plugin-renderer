@@ -1,10 +1,9 @@
 /* eslint-disable no-unused-vars */
-import { CreateElement } from 'vue'
+import { h } from 'vue'
 import XEUtils from 'xe-utils/ctor'
 import {
-  VXETable,
-  ColumnCellRenderOptions,
-  ColumnCellRenderParams
+  VXETableInstance,
+  VxeGlobalRendererHandles
 } from 'vxe-table/lib/vxe-table'
 /* eslint-enable no-unused-vars */
 
@@ -31,23 +30,23 @@ function getStyleUnit (val?: number | string) {
   return XEUtils.isNumber(val) ? `${val}px` : val
 }
 
-function showTooltip (elem: HTMLElement, params: ColumnCellRenderParams, formatter: string, value: any) {
+function showTooltip (elem: HTMLElement, params: VxeGlobalRendererHandles.RenderDefaultParams, formatter: string, value: any) {
   const { row, $table } = params
-  const content = XEUtils.isString(formatter) ? XEUtils.template(formatter, { value, row }, tmplOpts) : null
+  const content = XEUtils.isString(formatter) ? XEUtils.template(formatter, { value, row }, tmplOpts) : ''
   $table.openTooltip(elem, content)
 }
 
-function hideTooltip (elem: HTMLElement, params: ColumnCellRenderParams) {
+function hideTooltip (elem: HTMLElement, params: VxeGlobalRendererHandles.RenderDefaultParams) {
   const { $table } = params
   $table.clostTooltip()
 }
 
-function createBarVNs (h: CreateElement, params: ColumnCellRenderParams, renderOpts: ColumnCellRenderOptions) {
-  const { row, column, $table } = params
+function createBarVNs (params: VxeGlobalRendererHandles.RenderDefaultParams, renderOpts: VxeGlobalRendererHandles.RenderDefaultOptions) {
+  const { row, column } = params
   const { props = {} } = renderOpts
   const { margin, colors = [], bar = {}, label: barLabel = {}, tooltip = {} } = props
   const { max } = bar
-  let barHeight = getStyleUnit(bar.width)
+  const barHeight = getStyleUnit(bar.width)
   let cellValue = row[column.property] as any[]
   if (!XEUtils.isArray(cellValue)) {
     cellValue = [cellValue]
@@ -108,7 +107,7 @@ function createBarVNs (h: CreateElement, params: ColumnCellRenderParams, renderO
         style: {
           color: barLabel.color
         }
-      }, XEUtils.isString(barLabel.formatter) ? XEUtils.template(barLabel.formatter, { value: numList[index], row }, tmplOpts) : null)
+      }, XEUtils.isString(barLabel.formatter) ? XEUtils.template(barLabel.formatter, { value: numList[index], row }, tmplOpts) : '')
     ])
   })
 }
@@ -141,7 +140,7 @@ function parsePieAreas (blockList: PieBlockItem[], total: number) {
   return { prves, nexts }
 }
 
-function createPieVNs (h: CreateElement, params: ColumnCellRenderParams, renderOptList: ColumnCellRenderOptions[], cellValue: any[]) {
+function createPieVNs (params: VxeGlobalRendererHandles.RenderDefaultParams, renderOptList: VxeGlobalRendererHandles.RenderDefaultOptions[], cellValue: any[]) {
   if (!XEUtils.isArray(cellValue)) {
     cellValue = [cellValue]
   }
@@ -236,7 +235,7 @@ function createPieVNs (h: CreateElement, params: ColumnCellRenderParams, renderO
           style: {
             color: ringLabel.color
           }
-        }, XEUtils.isString(ringLabel.formatter) ? XEUtils.template(ringLabel.formatter, { value: row[column.property] || [], row }, tmplOpts) : null)
+        }, XEUtils.isString(ringLabel.formatter) ? XEUtils.template(ringLabel.formatter, { value: row[column.property] || [], row }, tmplOpts) : '')
       )
     }
 
@@ -256,31 +255,31 @@ function createPieVNs (h: CreateElement, params: ColumnCellRenderParams, renderO
  */
 const renderMap = {
   bar: {
-    renderDefault (h: CreateElement, renderOpts: ColumnCellRenderOptions, params: ColumnCellRenderParams) {
-      return createBarVNs(h, params, renderOpts)
+    renderDefault (renderOpts: VxeGlobalRendererHandles.RenderDefaultOptions, params: VxeGlobalRendererHandles.RenderDefaultParams) {
+      return createBarVNs(params, renderOpts)
     }
   },
   pie: {
-    renderDefault (h: CreateElement, renderOpts: ColumnCellRenderOptions, params: ColumnCellRenderParams) {
+    renderDefault (renderOpts: VxeGlobalRendererHandles.RenderDefaultOptions, params: VxeGlobalRendererHandles.RenderDefaultParams) {
       const { row, column } = params
-      let cellValue = row[column.property]
-      return createPieVNs(h, params, [renderOpts], cellValue ? [cellValue] : [])
+      const cellValue = row[column.property]
+      return createPieVNs(params, [renderOpts], cellValue ? [cellValue] : [])
     }
   },
   pies: {
-    renderDefault (h: CreateElement, renderOpts: ColumnCellRenderOptions, params: ColumnCellRenderParams) {
+    renderDefault (renderOpts: VxeGlobalRendererHandles.RenderDefaultOptions, params: VxeGlobalRendererHandles.RenderDefaultParams) {
       const { row, column } = params
-      let cellValue = row[column.property]
-      return createPieVNs(h, params, renderOpts.children || [], cellValue)
+      const cellValue = row[column.property]
+      return createPieVNs(params, renderOpts.children || [], cellValue)
     }
-  },
+  }
 }
 
 /**
  * 基于 vxe-table 表格的增强插件，提供一些常用的渲染器
  */
 export const VXETablePluginRenderer = {
-  install (xtable: typeof VXETable) {
+  install (xtable: VXETableInstance) {
     xtable.renderer.mixin(renderMap)
   }
 }
