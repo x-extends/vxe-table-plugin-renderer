@@ -1,6 +1,6 @@
 {
   "name": "vxe-table-plugin-renderer",
-  "version": "1.3.0",
+  "version": "3.0.0-alpha.0",
   "description": "基于 vxe-table 表格的增强插件，提供一些常用的渲染器",
   "scripts": {
     "lib": "gulp build"
