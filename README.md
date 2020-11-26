@@ -25,42 +25,46 @@ VXETable.use(VXETablePluginRenderer)
 
 ## API
 
-### ProgressBar 进度条
+### bar 柱状图
 
-#### ProgressBar Props
-
-| 属性 | 描述 | 类型 | 可选值 | 默认值 |
-|------|------|-----|-----|-----|
-| lineWidth | 线宽度 | number | — | — |
-| lineColor | 线颜色 | string | — | — |
-| lineBgColor | 线背景颜色 | string | — | — |
-| labelColor | 显示值的颜色 | string | — | — |
-
-### ProgressRing 环形进度条
-
-#### ProgressRing Props
+#### bar Props
 
 | 属性 | 描述 | 类型 | 可选值 | 默认值 |
 |------|------|-----|-----|-----|
-| width | 宽度 | number | — | — |
-| height | 高度 | number | — | — |
-| margin | 间距 | string | — | — |
-| lineColor | 线颜色 | string | — | — |
-| lineBgColor | 线背景颜色 | string | — | — |
-| hollowColor | 圆心的背景颜色 | string | — | — |
-| labelColor | 显示值的颜色 | string | — | — |
+| bar.width | 柱子宽度 | number | string | — | — |
+| bar.max | 柱子最大值 | number | — | — |
+| colors | 柱子颜色列表 | string[] | — | — |
+| tooltip.formatter | 提示内容格式 | string | — | — |
+| label.color | 显示值的颜色 | string | — | — |
+| label.formatter | 显示值的格式 | string | — | — |
+
+### pie 饼图
+
+#### pie Props
+
+| 属性 | 描述 | 类型 | 可选值 | 默认值 |
+|------|------|-----|-----|-----|
+| diameter | 饼图直径 | number | string | — | — |
+| margin | 饼图间距 | number | string | — | 1px |
+| colors | 扇区的颜色列表 | string[] | — | — |
+| tooltip.formatter | 提示内容格式 | string | — | — |
+| ring.diameter| 内圆直径 | number | string | — | — |
+| ring.color | 内圆的颜色 | string | — | — |
+| label.color | 显示值的颜色 | string | — | — |
+| label.formatter | 显示值的格式 | string | — | — |
 
 ## Demo
 
 ```html
 <vxe-table
   border
-  height="600"
+  show-overflow
+  height="400"
   :data="tableData">
   <vxe-table-column type="checkbox" width="60"></vxe-table-column>
   <vxe-table-column field="name" width="200"></vxe-table-column>
-  <vxe-table-column field="num1" title="Progress Bar" :cell-render="{name: 'ProgressBar'}"></vxe-table-column>
-  <vxe-table-column field="num2" title="Progress Ring" :cell-render="{name: 'ProgressRing'}"></vxe-table-column>
+  <vxe-table-column field="num1" title="Bar" :cell-render="{name: 'bar'}"></vxe-table-column>
+  <vxe-table-column field="num2" title="Ring" :cell-render="{name: 'pie'}"></vxe-table-column>
 </vxe-table>
 ```
 
@@ -69,9 +73,9 @@ export default {
   data () {
     return {
       tableData: [
-        { id: 100, name: 'test1', num1: 30, num2: 60 },
-        { id: 101, name: 'test2', num1: 15, num2: 85 },
-        { id: 102, name: 'test3', num1: 75, num2: 45 }
+        { id: 100, name: 'test1', num1: [30, 47], num2: [60, 36, 36] },
+        { id: 101, name: 'test2', num1: [15, 22], num2: [85, 22, 97] },
+        { id: 102, name: 'test3', num1: [75, 36], num2: [45, 84, 66] }
       ]
     }
   }
