@@ -32,8 +32,8 @@ function getStyleUnit (val?: number | string) {
 }
 
 function showTooltip (elem: HTMLElement, params: ColumnCellRenderParams, formatter: string, value: any) {
-  const { row, $table } = params
-  const content = XEUtils.isString(formatter) ? XEUtils.template(formatter, { value, row }, tmplOpts) : null
+  const { row, column, $table } = params
+  const content = XEUtils.isString(formatter) ? XEUtils.template(formatter, { value, row, column }, tmplOpts) : null
   $table.openTooltip(elem, content)
 }
 
@@ -43,7 +43,7 @@ function hideTooltip (elem: HTMLElement, params: ColumnCellRenderParams) {
 }
 
 function createBarVNs (h: CreateElement, params: ColumnCellRenderParams, renderOpts: ColumnCellRenderOptions) {
-  const { row, column, $table } = params
+  const { row, column } = params
   const { props = {} } = renderOpts
   const { margin, colors = [], bar = {}, label: barLabel = {}, tooltip = {} } = props
   const { max } = bar
@@ -108,7 +108,7 @@ function createBarVNs (h: CreateElement, params: ColumnCellRenderParams, renderO
         style: {
           color: barLabel.color
         }
-      }, XEUtils.isString(barLabel.formatter) ? XEUtils.template(barLabel.formatter, { value: numList[index], row }, tmplOpts) : null)
+      }, XEUtils.isString(barLabel.formatter) ? XEUtils.template(barLabel.formatter, { value: numList[index], row, column }, tmplOpts) : null)
     ])
   })
 }
@@ -236,7 +236,7 @@ function createPieVNs (h: CreateElement, params: ColumnCellRenderParams, renderO
           style: {
             color: ringLabel.color
           }
-        }, XEUtils.isString(ringLabel.formatter) ? XEUtils.template(ringLabel.formatter, { value: row[column.property] || [], row }, tmplOpts) : null)
+        }, XEUtils.isString(ringLabel.formatter) ? XEUtils.template(ringLabel.formatter, { value: row[column.property] || [], row, column }, tmplOpts) : null)
       )
     }
 

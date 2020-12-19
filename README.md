@@ -36,7 +36,7 @@ VXETable.use(VXETablePluginRenderer)
 | colors | 柱子颜色列表 | string[] | — | — |
 | tooltip.formatter | 提示内容格式 | string | — | — |
 | label.color | 显示值的颜色 | string | — | — |
-| label.formatter | 显示值的格式 | string | — | — |
+| label.formatter | 显示值的格式（{row, value}） | string | — | — |
 
 ### pie 饼图
 
@@ -51,7 +51,7 @@ VXETable.use(VXETablePluginRenderer)
 | ring.diameter| 内圆直径 | number | string | — | — |
 | ring.color | 内圆的颜色 | string | — | — |
 | label.color | 显示值的颜色 | string | — | — |
-| label.formatter | 显示值的格式 | string | — | — |
+| label.formatter | 显示值的格式（{row, value}） | string | — | — |
 
 ## Demo
 
