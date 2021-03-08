@@ -1,7 +1,7 @@
 import { h } from 'vue'
 import XEUtils from 'xe-utils/ctor'
 import {
-  VXETableInstance,
+  VXETableCore,
   VxeGlobalRendererHandles
 } from 'vxe-table/lib/vxe-table'
 
@@ -167,7 +167,7 @@ function createPieVNs (params: VxeGlobalRendererHandles.RenderDefaultParams, ren
         const hoverColor = toRGBLight(elem.style.backgroundColor, 10)
         if (hoverColor) {
           XEUtils.arrayEach(elem.parentNode.parentNode.querySelectorAll(`.block-${index}`), elem => {
-            elem.style.backgroundColor = hoverColor
+            (elem as HTMLElement).style.backgroundColor = hoverColor
           })
         }
         if (tooltip.formatter) {
@@ -179,7 +179,7 @@ function createPieVNs (params: VxeGlobalRendererHandles.RenderDefaultParams, ren
         const index = XEUtils.toNumber(elem.getAttribute('block'))
         const reColor = colors[index] || getDefaultColor(index)
         XEUtils.arrayEach(elem.parentNode.parentNode.querySelectorAll(`.block-${index}`), elem => {
-          elem.style.backgroundColor = reColor
+          (elem as HTMLElement).style.backgroundColor = reColor
         })
         hideTooltip(elem, params)
       }
@@ -248,8 +248,10 @@ function createPieVNs (params: VxeGlobalRendererHandles.RenderDefaultParams, ren
  * 基于 vxe-table 表格的增强插件，提供一些常用的渲染器
  */
 export const VXETablePluginRenderer = {
-  install (xtable: VXETableInstance) {
-    xtable.renderer.mixin({
+  install (vxetablecore: VXETableCore) {
+    const { renderer } = vxetablecore
+
+    renderer.mixin({
       bar: {
         renderDefault (renderOpts, params) {
           return createBarVNs(params, renderOpts)
