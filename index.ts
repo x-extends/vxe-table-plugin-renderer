@@ -1,5 +1,5 @@
 import { CreateElement, VNode } from 'vue'
-import XEUtils from 'xe-utils/ctor'
+import XEUtils from 'xe-utils'
 import {
   VXETable,
   ColumnCellRenderOptions,
@@ -281,25 +281,44 @@ export const VXETablePluginRenderer = {
           const { row, column } = params
           const { props = {} } = renderOpts
           const { colors = [] } = props
-          const count = XEUtils.toNumber(props.count) || 5
           let cellValue = XEUtils.toNumber(row[column.property])
           const rateVNs: VNode[] = []
-          let index = 1
-          let lastColor
-          while (index <= count) {
-            if (colors[index]) {
-              lastColor = colors[index]
+          let lastColor: string
+          XEUtils.range(0, XEUtils.toNumber(props.count) || 5).forEach((obj, index) => {
+            const itemIndex = index + 1
+            const isActive = cellValue >= itemIndex
+            let itemColor: string
+            if (isActive) {
+              if (colors[itemIndex]) {
+                lastColor = colors[itemIndex]
+              }
+              itemColor = lastColor || '#F7BA2A'
+            } else {
+              itemColor = colors[0] || '#E9E9E9'
+            }
+            const itemOns = {
+              mouseenter (evnt: MouseEvent) {
+                const elem = evnt.currentTarget as HTMLSpanElement
+                const hoverColor = toRGBLight(elem.style.color, 10)
+                if (hoverColor) {
+                  elem.style.color = hoverColor
+                }
+              },
+              mouseleave (evnt: MouseEvent) {
+                const elem = evnt.currentTarget as HTMLSpanElement
+                elem.style.color = itemColor
+              }
             }
             rateVNs.push(
               h('span', {
                 class: 'vxe-renderer-rate-item',
                 style: {
-                  color: cellValue >= index ? (lastColor || '#F7BA2A') : colors[0] || '#E9E9E9'
-                }
+                  color: itemColor
+                },
+                on: isActive ? itemOns : {}
               })
             )
-            index++
-          }
+          })
           return [
             h('div', {
               class: 'vxe-renderer-rate'
