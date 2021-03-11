@@ -53,6 +53,14 @@ VXETable.use(VXETablePluginRenderer)
 | label.color | 显示值的颜色 | string | — | — |
 | label.formatter | 显示值的格式（{row, value}） | string | — | — |
 
+### rate 评分
+
+#### rate Props
+
+| 属性 | 描述 | 类型 | 可选值 | 默认值 |
+|------|------|-----|-----|-----|
+| colors | 每一项的颜色列表 | string[] | — | — |
+
 ## Demo
 
 ```html
@@ -65,6 +73,7 @@ VXETable.use(VXETablePluginRenderer)
   <vxe-table-column field="name" width="200"></vxe-table-column>
   <vxe-table-column field="num1" title="Bar" :cell-render="{name: 'bar'}"></vxe-table-column>
   <vxe-table-column field="num2" title="Ring" :cell-render="{name: 'pie'}"></vxe-table-column>
+  <vxe-table-column field="num3" title="Rate" :cell-render="{name: 'rate'}"></vxe-table-column>
 </vxe-table>
 ```
 
@@ -73,9 +82,9 @@ export default {
   data () {
     return {
       tableData: [
-        { id: 100, name: 'test1', num1: [30, 47], num2: [60, 36, 36] },
-        { id: 101, name: 'test2', num1: [15, 22], num2: [85, 22, 97] },
-        { id: 102, name: 'test3', num1: [75, 36], num2: [45, 84, 66] }
+        { id: 100, name: 'test1', num1: [30, 47], num2: [60, 36, 36], num3: 3 },
+        { id: 101, name: 'test2', num1: [15, 22], num2: [85, 22, 97], num3: 1 },
+        { id: 102, name: 'test3', num1: [75, 36], num2: [45, 84, 66], num3: 5 }
       ]
     }
   }

@@ -119,3 +119,17 @@ $vxe-table-row-height-mini: 36px;
     z-index: 7;
   }
 }
+
+.vxe-renderer-rate {
+  display: inline-block;
+  position: relative;
+  vertical-align: middle;
+  .vxe-renderer-rate-item {
+    padding: 0 0.1em;;
+    font-size: 1.3em;
+    user-select: none;
+    &:before{
+      content: "\2605";
+    }
+  }
+}

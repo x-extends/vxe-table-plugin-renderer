@@ -1,5 +1,5 @@
-import { h } from 'vue'
-import XEUtils from 'xe-utils/ctor'
+import { h, VNode } from 'vue'
+import XEUtils from 'xe-utils'
 import {
   VXETableCore,
   VxeGlobalRendererHandles
@@ -269,6 +269,56 @@ export const VXETablePluginRenderer = {
           const { row, column } = params
           let cellValue = row[column.property]
           return createPieVNs(params, renderOpts.children || [], cellValue)
+        }
+      },
+      rate: {
+        renderDefault (renderOpts, params) {
+          const { row, column } = params
+          const { props = {} } = renderOpts
+          const { colors = [] } = props
+          let cellValue = XEUtils.toNumber(row[column.property])
+          const rateVNs: VNode[] = []
+          let lastColor: string
+          XEUtils.range(0, XEUtils.toNumber(props.count) || 5).forEach((obj, index) => {
+            const itemIndex = index + 1
+            const isActive = cellValue >= itemIndex
+            let itemColor: string
+            if (cellValue >= itemIndex) {
+              if (colors[itemIndex]) {
+                lastColor = colors[itemIndex]
+              }
+              itemColor = lastColor || '#F7BA2A'
+            } else {
+              itemColor = colors[0] || '#E9E9E9'
+            }
+            const itemOns = isActive ? {
+              onMouseenter (evnt: MouseEvent) {
+                const elem = evnt.currentTarget as HTMLSpanElement
+                const hoverColor = toRGBLight(elem.style.color, 10)
+                if (hoverColor) {
+                  elem.style.color = hoverColor
+                }
+              },
+              onMouseleave (evnt: MouseEvent) {
+                const elem = evnt.currentTarget as HTMLSpanElement
+                elem.style.color = itemColor
+              }
+            } : {}
+            rateVNs.push(
+              h('span', {
+                class: 'vxe-renderer-rate-item',
+                style: {
+                  color: itemColor
+                },
+                ...itemOns
+              })
+            )
+          })
+          return [
+            h('div', {
+              class: 'vxe-renderer-rate'
+            }, rateVNs)
+          ]
         }
       }
     })
