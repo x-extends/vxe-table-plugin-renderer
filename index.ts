@@ -1,12 +1,10 @@
-/* eslint-disable no-unused-vars */
-import { CreateElement } from 'vue'
+import { CreateElement, VNode } from 'vue'
 import XEUtils from 'xe-utils/ctor'
 import {
   VXETable,
   ColumnCellRenderOptions,
   ColumnCellRenderParams
 } from 'vxe-table/lib/vxe-table'
-/* eslint-enable no-unused-vars */
 
 const defaultColors = ['#2F4554', '#C23531', '#61A0A8', '#D48265', '#91C7AE', '#749F83', '#CA8622', '#006699', '#BDA29A', '#546570']
 const tmplOpts = { tmplRE: /\{([.\w[\]\s]+)\}/g }
@@ -39,7 +37,9 @@ function showTooltip (elem: HTMLElement, params: ColumnCellRenderParams, formatt
 
 function hideTooltip (elem: HTMLElement, params: ColumnCellRenderParams) {
   const { $table } = params
-  $table.clostTooltip()
+  if ($table) {
+    $table.closeTooltip()
+  }
 }
 
 function createBarVNs (h: CreateElement, params: ColumnCellRenderParams, renderOpts: ColumnCellRenderOptions) {
@@ -252,36 +252,62 @@ function createPieVNs (h: CreateElement, params: ColumnCellRenderParams, renderO
 }
 
 /**
- * 渲染函数
- */
-const renderMap = {
-  bar: {
-    renderDefault (h: CreateElement, renderOpts: ColumnCellRenderOptions, params: ColumnCellRenderParams) {
-      return createBarVNs(h, params, renderOpts)
-    }
-  },
-  pie: {
-    renderDefault (h: CreateElement, renderOpts: ColumnCellRenderOptions, params: ColumnCellRenderParams) {
-      const { row, column } = params
-      let cellValue = row[column.property]
-      return createPieVNs(h, params, [renderOpts], cellValue ? [cellValue] : [])
-    }
-  },
-  pies: {
-    renderDefault (h: CreateElement, renderOpts: ColumnCellRenderOptions, params: ColumnCellRenderParams) {
-      const { row, column } = params
-      let cellValue = row[column.property]
-      return createPieVNs(h, params, renderOpts.children || [], cellValue)
-    }
-  },
-}
-
-/**
  * 基于 vxe-table 表格的增强插件，提供一些常用的渲染器
  */
 export const VXETablePluginRenderer = {
   install (xtable: typeof VXETable) {
-    xtable.renderer.mixin(renderMap)
+    xtable.renderer.mixin({
+      bar: {
+        renderDefault (h, renderOpts, params) {
+          return createBarVNs(h, params, renderOpts)
+        }
+      },
+      pie: {
+        renderDefault (h, renderOpts, params) {
+          const { row, column } = params
+          let cellValue = row[column.property]
+          return createPieVNs(h, params, [renderOpts], cellValue ? [cellValue] : [])
+        }
+      },
+      pies: {
+        renderDefault (h, renderOpts, params) {
+          const { row, column } = params
+          let cellValue = row[column.property]
+          return createPieVNs(h, params, renderOpts.children || [], cellValue)
+        }
+      },
+      rate: {
+        renderDefault (h, renderOpts, params) {
+          const { row, column } = params
+          const { props = {} } = renderOpts
+          const { colors = [] } = props
+          const count = XEUtils.toNumber(props.count) || 5
+          let cellValue = XEUtils.toNumber(row[column.property])
+          const rateVNs: VNode[] = []
+          let index = 1
+          let lastColor
+          while (index <= count) {
+            if (colors[index]) {
+              lastColor = colors[index]
+            }
+            rateVNs.push(
+              h('span', {
+                class: 'vxe-renderer-rate-item',
+                style: {
+                  color: cellValue >= index ? (lastColor || '#F7BA2A') : colors[0] || '#E9E9E9'
+                }
+              })
+            )
+            index++
+          }
+          return [
+            h('div', {
+              class: 'vxe-renderer-rate'
+            }, rateVNs)
+          ]
+        }
+      }
+    })
   }
 }
 
