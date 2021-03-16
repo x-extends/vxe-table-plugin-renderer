@@ -1,9 +1,6 @@
 import { h, VNode } from 'vue'
 import XEUtils from 'xe-utils'
-import {
-  VXETableCore,
-  VxeGlobalRendererHandles
-} from 'vxe-table/lib/vxe-table'
+import { VXETableCore, VxeGlobalRendererHandles } from 'vxe-table'
 
 const defaultColors = ['#2F4554', '#C23531', '#61A0A8', '#D48265', '#91C7AE', '#749F83', '#CA8622', '#006699', '#BDA29A', '#546570']
 const tmplOpts = { tmplRE: /\{([.\w[\]\s]+)\}/g }
