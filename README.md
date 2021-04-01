@@ -69,11 +69,11 @@ VXETable.use(VXETablePluginRenderer)
   show-overflow
   height="400"
   :data="tableData">
-  <vxe-table-column type="checkbox" width="60"></vxe-table-column>
-  <vxe-table-column field="name" width="200"></vxe-table-column>
-  <vxe-table-column field="num1" title="Bar" :cell-render="{name: 'bar'}"></vxe-table-column>
-  <vxe-table-column field="num2" title="Ring" :cell-render="{name: 'pie'}"></vxe-table-column>
-  <vxe-table-column field="num3" title="Rate" :cell-render="{name: 'rate'}"></vxe-table-column>
+  <vxe-column type="checkbox" width="60"></vxe-column>
+  <vxe-column field="name" width="200"></vxe-column>
+  <vxe-column field="num1" title="Bar" :cell-render="{name: 'bar'}"></vxe-column>
+  <vxe-column field="num2" title="Ring" :cell-render="{name: 'pie'}"></vxe-column>
+  <vxe-column field="num3" title="Rate" :cell-render="{name: 'rate'}"></vxe-column>
 </vxe-table>
 ```
 
