@@ -77,13 +77,13 @@ $vxe-table-row-height-mini: 36px;
   .vxe-renderer-pie--prve-half {
     .vxe-renderer-pie--block {
       transform-origin: center left;
-      z-index: 3;
+      z-index: 1;
     }
   }
   .vxe-renderer-pie--next-half {
     .vxe-renderer-pie--block {
       transform-origin: center right;
-      z-index: 5;
+      z-index: 2;
     }
   }
   .vxe-renderer-pie--block {
@@ -96,7 +96,6 @@ $vxe-table-row-height-mini: 36px;
     background-color: #409eff;
   }
   .vxe-renderer-pie--ring-bg {
-    position: absolute;
     top: 50%;
     left: 50%;
     width: 50%;
@@ -104,10 +103,8 @@ $vxe-table-row-height-mini: 36px;
     border-radius: 50%;
     transform: translate(-50%, -50%);
     background-color: #fff;
-    z-index: 7;
   }
   .vxe-renderer-pie--ring-label {
-    position: absolute;
     top: 50%;
     left: 50%;
     max-width: 3em;
@@ -116,7 +113,11 @@ $vxe-table-row-height-mini: 36px;
     text-overflow: ellipsis;
     white-space: nowrap;
     transform: translate(-50%, -50%) scale(0.8);
-    z-index: 7;
+  }
+  .vxe-renderer-pie--ring-bg,
+  .vxe-renderer-pie--ring-label {
+    position: absolute;
+    z-index: 3;
   }
 }
 

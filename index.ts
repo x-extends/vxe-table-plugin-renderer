@@ -322,7 +322,7 @@ export const VXETablePluginRenderer = {
   }
 }
 
-if (typeof window !== 'undefined' && window.VXETable) {
+if (typeof window !== 'undefined' && window.VXETable && window.VXETable.use) {
   window.VXETable.use(VXETablePluginRenderer)
 }
 
