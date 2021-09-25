@@ -43,7 +43,7 @@ function createBarVNs (params: VxeGlobalRendererHandles.RenderDefaultParams, ren
   const { props = {} } = renderOpts
   const { margin, colors = [], bar = {}, label: barLabel = {}, tooltip = {} } = props
   const { max } = bar
-  let barHeight = getStyleUnit(bar.width)
+  const barHeight = getStyleUnit(bar.width)
   let cellValue = row[column.property] as any[]
   if (!XEUtils.isArray(cellValue)) {
     cellValue = [cellValue]
@@ -257,14 +257,14 @@ export const VXETablePluginRenderer = {
       pie: {
         renderDefault (renderOpts, params) {
           const { row, column } = params
-          let cellValue = row[column.property]
+          const cellValue = row[column.property]
           return createPieVNs(params, [renderOpts], cellValue ? [cellValue] : [])
         }
       },
       pies: {
         renderDefault (renderOpts, params) {
           const { row, column } = params
-          let cellValue = row[column.property]
+          const cellValue = row[column.property]
           return createPieVNs(params, renderOpts.children || [], cellValue)
         }
       },
@@ -273,7 +273,7 @@ export const VXETablePluginRenderer = {
           const { row, column } = params
           const { props = {} } = renderOpts
           const { colors = [] } = props
-          let cellValue = XEUtils.toNumber(row[column.property])
+          const cellValue = XEUtils.toNumber(row[column.property])
           const rateVNs: VNode[] = []
           let lastColor: string
           XEUtils.range(0, XEUtils.toNumber(props.count) || 5).forEach((obj, index) => {
@@ -288,19 +288,21 @@ export const VXETablePluginRenderer = {
             } else {
               itemColor = colors[0] || '#E9E9E9'
             }
-            const itemOns = isActive ? {
-              onMouseenter (evnt: MouseEvent) {
-                const elem = evnt.currentTarget as HTMLSpanElement
-                const hoverColor = toRGBLight(elem.style.color, 10)
-                if (hoverColor) {
-                  elem.style.color = hoverColor
+            const itemOns = isActive
+              ? {
+                  onMouseenter (evnt: MouseEvent) {
+                    const elem = evnt.currentTarget as HTMLSpanElement
+                    const hoverColor = toRGBLight(elem.style.color, 10)
+                    if (hoverColor) {
+                      elem.style.color = hoverColor
+                    }
+                  },
+                  onMouseleave (evnt: MouseEvent) {
+                    const elem = evnt.currentTarget as HTMLSpanElement
+                    elem.style.color = itemColor
+                  }
                 }
-              },
-              onMouseleave (evnt: MouseEvent) {
-                const elem = evnt.currentTarget as HTMLSpanElement
-                elem.style.color = itemColor
-              }
-            } : {}
+              : {}
             rateVNs.push(
               h('span', {
                 class: 'vxe-renderer-rate-item',
