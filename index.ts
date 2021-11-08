@@ -4,7 +4,7 @@ import {
   VXETable,
   ColumnCellRenderOptions,
   ColumnCellRenderParams
-} from 'vxe-table/lib/vxe-table'
+} from 'vxe-table'
 
 const defaultColors = ['#2F4554', '#C23531', '#61A0A8', '#D48265', '#91C7AE', '#749F83', '#CA8622', '#006699', '#BDA29A', '#546570']
 const tmplOpts = { tmplRE: /\{([.\w[\]\s]+)\}/g }
@@ -31,7 +31,7 @@ function getStyleUnit (val?: number | string) {
 
 function showTooltip (elem: HTMLElement, params: ColumnCellRenderParams, formatter: string, value: any) {
   const { row, column, $table } = params
-  const content = XEUtils.isString(formatter) ? XEUtils.template(formatter, { value, row, column }, tmplOpts) : null
+  const content = XEUtils.isString(formatter) ? XEUtils.template(formatter, { value, row, column }, tmplOpts) : ''
   $table.openTooltip(elem, content)
 }
 
@@ -47,7 +47,7 @@ function createBarVNs (h: CreateElement, params: ColumnCellRenderParams, renderO
   const { props = {} } = renderOpts
   const { margin, colors = [], bar = {}, label: barLabel = {}, tooltip = {} } = props
   const { max } = bar
-  let barHeight = getStyleUnit(bar.width)
+  const barHeight = getStyleUnit(bar.width)
   let cellValue = row[column.property] as any[]
   if (!XEUtils.isArray(cellValue)) {
     cellValue = [cellValue]
@@ -169,7 +169,7 @@ function createPieVNs (h: CreateElement, params: ColumnCellRenderParams, renderO
         const index = XEUtils.toNumber(elem.getAttribute('block'))
         const hoverColor = toRGBLight(elem.style.backgroundColor, 10)
         if (hoverColor) {
-          XEUtils.arrayEach(elem.parentNode.parentNode.querySelectorAll(`.block-${index}`), elem => {
+          XEUtils.arrayEach(elem.parentNode.parentNode.querySelectorAll(`.block-${index}`), (elem: any) => {
             elem.style.backgroundColor = hoverColor
           })
         }
@@ -181,7 +181,7 @@ function createPieVNs (h: CreateElement, params: ColumnCellRenderParams, renderO
         const elem = evnt.currentTarget as HTMLSpanElement & { parentNode: HTMLSpanElement & { parentNode: HTMLSpanElement } }
         const index = XEUtils.toNumber(elem.getAttribute('block'))
         const reColor = colors[index] || getDefaultColor(index)
-        XEUtils.arrayEach(elem.parentNode.parentNode.querySelectorAll(`.block-${index}`), elem => {
+        XEUtils.arrayEach(elem.parentNode.parentNode.querySelectorAll(`.block-${index}`), (elem: any) => {
           elem.style.backgroundColor = reColor
         })
         hideTooltip(elem, params)
@@ -265,14 +265,14 @@ export const VXETablePluginRenderer = {
       pie: {
         renderDefault (h, renderOpts, params) {
           const { row, column } = params
-          let cellValue = row[column.property]
+          const cellValue = row[column.property]
           return createPieVNs(h, params, [renderOpts], cellValue ? [cellValue] : [])
         }
       },
       pies: {
         renderDefault (h, renderOpts, params) {
           const { row, column } = params
-          let cellValue = row[column.property]
+          const cellValue = row[column.property]
           return createPieVNs(h, params, renderOpts.children || [], cellValue)
         }
       },
@@ -281,7 +281,7 @@ export const VXETablePluginRenderer = {
           const { row, column } = params
           const { props = {} } = renderOpts
           const { colors = [] } = props
-          let cellValue = XEUtils.toNumber(row[column.property])
+          const cellValue = XEUtils.toNumber(row[column.property])
           const rateVNs: VNode[] = []
           let lastColor: string
           XEUtils.range(0, XEUtils.toNumber(props.count) || 5).forEach((obj, index) => {
