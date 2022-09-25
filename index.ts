@@ -44,7 +44,7 @@ function createBarVNs (params: VxeGlobalRendererHandles.RenderDefaultParams, ren
   const { margin, colors = [], bar = {}, label: barLabel = {}, tooltip = {} } = props
   const { max } = bar
   const barHeight = getStyleUnit(bar.width)
-  let cellValue = row[column.property] as any[]
+  let cellValue = row[column.field] as any[]
   if (!XEUtils.isArray(cellValue)) {
     cellValue = [cellValue]
   }
@@ -226,7 +226,7 @@ function createPieVNs (params: VxeGlobalRendererHandles.RenderDefaultParams, ren
           style: {
             color: ringLabel.color
           }
-        }, XEUtils.isString(ringLabel.formatter) ? XEUtils.template(ringLabel.formatter, { value: row[column.property] || [], row, column }, tmplOpts) : '')
+        }, XEUtils.isString(ringLabel.formatter) ? XEUtils.template(ringLabel.formatter, { value: row[column.field] || [], row, column }, tmplOpts) : '')
       )
     }
 
@@ -257,14 +257,14 @@ export const VXETablePluginRenderer = {
       pie: {
         renderDefault (renderOpts, params) {
           const { row, column } = params
-          const cellValue = row[column.property]
+          const cellValue = row[column.field]
           return createPieVNs(params, [renderOpts], cellValue ? [cellValue] : [])
         }
       },
       pies: {
         renderDefault (renderOpts, params) {
           const { row, column } = params
-          const cellValue = row[column.property]
+          const cellValue = row[column.field]
           return createPieVNs(params, renderOpts.children || [], cellValue)
         }
       },
@@ -273,7 +273,7 @@ export const VXETablePluginRenderer = {
           const { row, column } = params
           const { props = {} } = renderOpts
           const { colors = [] } = props
-          const cellValue = XEUtils.toNumber(row[column.property])
+          const cellValue = XEUtils.toNumber(row[column.field])
           const rateVNs: VNode[] = []
           let lastColor: string
           XEUtils.range(0, XEUtils.toNumber(props.count) || 5).forEach((obj, index) => {
