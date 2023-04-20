@@ -7,6 +7,10 @@
 
 基于 [vxe-table](https://github.com/xuliangzhan/vxe-table) 表格的增强插件，提供一些常用的渲染器
 
+## Compatibility
+
+对应 vxe-table v3 版本  
+
 ## Installing
 
 ```shell
