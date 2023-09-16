@@ -255,8 +255,13 @@ function createPieVNs (h: CreateElement, params: ColumnCellRenderParams, renderO
  * 基于 vxe-table 表格的增强插件，提供一些常用的渲染器
  */
 export const VXETablePluginRenderer = {
-  install (xtable: typeof VXETable) {
-    xtable.renderer.mixin({
+  install (vxetable: typeof VXETable) {
+    // 检查版本
+    if (!/^(2|3)\./.test(vxetable.version)) {
+      console.error('[vxe-table-plugin-renderer] Version vxe-table 3.x is required')
+    }
+
+    vxetable.renderer.mixin({
       bar: {
         renderDefault (h, renderOpts, params) {
           return createBarVNs(h, params, renderOpts)
