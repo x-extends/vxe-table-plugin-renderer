@@ -1,7 +1,7 @@
 import { CreateElement, VNode } from 'vue'
 import XEUtils from 'xe-utils'
 import {
-  VXETable,
+  VXETableCore,
   ColumnCellRenderOptions,
   ColumnCellRenderParams
 } from 'vxe-table'
@@ -255,7 +255,7 @@ function createPieVNs (h: CreateElement, params: ColumnCellRenderParams, renderO
  * 基于 vxe-table 表格的增强插件，提供一些常用的渲染器
  */
 export const VXETablePluginRenderer = {
-  install (vxetable: typeof VXETable) {
+  install (vxetable: VXETableCore) {
     // 检查版本
     if (!/^(2|3)\./.test(vxetable.version)) {
       console.error('[vxe-table-plugin-renderer] Version vxe-table 3.x is required')
