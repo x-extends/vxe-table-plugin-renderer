@@ -49,14 +49,14 @@ gulp.task('build_commonjs', function () {
 
 gulp.task('build_umd', function () {
   return gulp.src(['index.ts'])
-  .pipe(ts(tsconfig.compilerOptions))
+    .pipe(ts(tsconfig.compilerOptions))
     .pipe(babel({
       moduleId: pack.name,
       presets: ['@babel/env'],
       plugins: [['@babel/transform-modules-umd', {
         globals: {
           [pack.name]: exportModuleName,
-          'vue': 'Vue',
+          vue: 'Vue',
           'vxe-table': 'VXETable',
           'xe-utils': 'XEUtils'
         },

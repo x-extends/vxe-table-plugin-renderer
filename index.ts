@@ -242,13 +242,16 @@ function createPieVNs (params: VxeGlobalRendererHandles.RenderDefaultParams, ren
 }
 
 /**
- * 基于 vxe-table 表格的增强插件，提供一些常用的渲染器
+ * 基于 vxe-table 表格的扩展插件，提供一些常用的渲染器
  */
 export const VXETablePluginRenderer = {
-  install (vxetablecore: VXETableCore) {
-    const { renderer } = vxetablecore
+  install (vxetable: VXETableCore) {
+    // 检查版本
+    if (!/^(4)\./.test(vxetable.version)) {
+      console.error('[vxe-table-plugin-renderer] Version vxe-table 4.x is required')
+    }
 
-    renderer.mixin({
+    vxetable.renderer.mixin({
       bar: {
         renderDefault (renderOpts, params) {
           return createBarVNs(params, renderOpts)
