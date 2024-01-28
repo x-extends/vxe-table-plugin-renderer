@@ -252,13 +252,13 @@ function createPieVNs (h: CreateElement, params: ColumnCellRenderParams, renderO
 }
 
 /**
- * 基于 vxe-table 表格的增强插件，提供一些常用的渲染器
+ * 基于 vxe-table 表格的扩展插件，提供一些常用的渲染器
  */
 export const VXETablePluginRenderer = {
   install (vxetable: VXETableCore) {
     // 检查版本
     if (!/^(2|3)\./.test(vxetable.version)) {
-      console.error('[vxe-table-plugin-renderer] Version vxe-table 3.x is required')
+      console.error('[vxe-table-plugin-renderer 3.x] Version vxe-table 3.x is required')
     }
 
     vxetable.renderer.mixin({
