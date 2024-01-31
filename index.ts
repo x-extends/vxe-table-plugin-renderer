@@ -257,7 +257,7 @@ function createPieVNs (h: CreateElement, params: ColumnCellRenderParams, renderO
 export const VXETablePluginRenderer = {
   install (vxetable: VXETableCore) {
     // 检查版本
-    if (!/^(2|3)\./.test(vxetable.version)) {
+    if (!/^(3)\./.test(vxetable.version)) {
       console.error('[vxe-table-plugin-renderer 3.x] Version vxe-table 3.x is required')
     }
 
