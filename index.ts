@@ -248,7 +248,7 @@ export const VXETablePluginRenderer = {
   install (vxetable: VXETableCore) {
     // 检查版本
     if (!/^(4)\./.test(vxetable.version)) {
-      console.error('[vxe-table-plugin-renderer] Version vxe-table 4.x is required')
+      console.error('[vxe-table-plugin-renderer 4.x] Version vxe-table 4.x is required')
     }
 
     vxetable.renderer.mixin({
