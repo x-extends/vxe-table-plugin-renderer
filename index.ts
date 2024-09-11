@@ -1,10 +1,6 @@
 import { CreateElement, VNode } from 'vue'
 import XEUtils from 'xe-utils'
-import {
-  VXETableCore,
-  ColumnCellRenderOptions,
-  ColumnCellRenderParams
-} from 'vxe-table'
+import { VXETableCore } from 'vxe-table'
 
 const defaultColors = ['#2F4554', '#C23531', '#61A0A8', '#D48265', '#91C7AE', '#749F83', '#CA8622', '#006699', '#BDA29A', '#546570']
 const tmplOpts = { tmplRE: /\{([.\w[\]\s]+)\}/g }
@@ -29,20 +25,20 @@ function getStyleUnit (val?: number | string) {
   return XEUtils.isNumber(val) ? `${val}px` : val
 }
 
-function showTooltip (elem: HTMLElement, params: ColumnCellRenderParams, formatter: string, value: any) {
+function showTooltip (elem: HTMLElement, params: any, formatter: string, value: any) {
   const { row, column, $table } = params
   const content = XEUtils.isString(formatter) ? XEUtils.template(formatter, { value, row, column }, tmplOpts) : ''
   $table.openTooltip(elem, content)
 }
 
-function hideTooltip (elem: HTMLElement, params: ColumnCellRenderParams) {
+function hideTooltip (elem: HTMLElement, params: any) {
   const { $table } = params
   if ($table) {
     $table.closeTooltip()
   }
 }
 
-function createBarVNs (h: CreateElement, params: ColumnCellRenderParams, renderOpts: ColumnCellRenderOptions) {
+function createBarVNs (h: CreateElement, params: any, renderOpts: any) {
   const { row, column } = params
   const { props = {} } = renderOpts
   const { margin, colors = [], bar = {}, label: barLabel = {}, tooltip = {} } = props
@@ -141,7 +137,7 @@ function parsePieAreas (blockList: PieBlockItem[], total: number) {
   return { prves, nexts }
 }
 
-function createPieVNs (h: CreateElement, params: ColumnCellRenderParams, renderOptList: ColumnCellRenderOptions[], cellValue: any[]) {
+function createPieVNs (h: CreateElement, params: any, renderOptList: any[], cellValue: any[]) {
   if (!XEUtils.isArray(cellValue)) {
     cellValue = [cellValue]
   }
